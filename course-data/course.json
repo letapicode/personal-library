@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "id": "java-software-design",
+  "title": "Low-Level Design & Design Patterns",
+  "subtitle": "Object-Oriented Design, SOLID, 23 GoF Patterns & Software Architecture",
+  "author": "ChatGPT",
+  "description": "A structured Java software-design course covering design foundations, SOLID principles, all 23 Gang of Four patterns, and pattern selection.",
+  "category": "Software Architecture",
+  "coverGradient": "linear-gradient(145deg, #1b0c26 0%, #3a164c 50%, #200d2b 100%)",
+  "accentColor": "#e094b5",
+  "createdAt": "2026-03-01",
+  "tags": ["Java", "SOLID", "23 GoF Patterns", "LLD", "Software Design"],
+  "source": {
+    "type": "markdown",
+    "fileName": "Design-Patterns-Lessons-1-30.md",
+    "sha256": "5f4fb6008cdd048b7fa052c155bebaab70277e0fa9f884cafc34409392c3c7c6"
+  },
+  "lessonCount": 30,
+  "firstLesson": 1,
+  "lastLesson": 30,
+  "sections": [
+    {
+      "id": "foundations",
+      "title": "Foundations",
+      "startLesson": 1,
+      "endLesson": 1
+    },
+    {
+      "id": "solid",
+      "title": "SOLID",
+      "startLesson": 2,
+      "endLesson": 6
+    },
+    {
+      "id": "creational-patterns",
+      "title": "Creational Patterns",
+      "startLesson": 7,
+      "endLesson": 11
+    },
+    {
+      "id": "structural-patterns",
+      "title": "Structural Patterns",
+      "startLesson": 12,
+      "endLesson": 18
+    },
+    {
+      "id": "behavioral-patterns",
+      "title": "Behavioral Patterns",
+      "startLesson": 19,
+      "endLesson": 29
+    },
+    {
+      "id": "pattern-selection",
+      "title": "Pattern Selection",
+      "startLesson": 30,
+      "endLesson": 30
+    }
+  ],
+  "lessons": [
+    {
+      "id": "lesson-001",
+      "number": 1,
+      "title": "What is Software Design?",
+      "section": "Foundations",
+      "sectionId": "foundations",
+      "file": "lessons/lesson-001.md",
+      "sha256": "41cfda82b0839766d9217a3c51f95368163964d34ca835e4d2dbffbe62bcb0d7"
+    },
+    {
+      "id": "lesson-002",
+      "number": 2,
+      "title": "SOLID Principles",
+      "section": "SOLID",
+      "sectionId": "solid",
+      "file": "lessons/lesson-002.md",
+      "sha256": "db708fb2fe25fcd60d043d5878a9fb58ee602b4b158f6a4235394303ae480ebb"
+    },
+    {
+      "id": "lesson-003",
+      "number": 3,
+      "title": "Open/Closed Principle",
+      "section": "SOLID",
+      "sectionId": "solid",
+      "file": "lessons/lesson-003.md",
+      "sha256": "71384965bc9a74ec40eac4b908ca5175fa5e88a75d2bb12dbf09cfed401f193d"
+    },
+    {
+      "id": "lesson-004",
+      "number": 4,
+      "title": "Liskov Substitution Principle",
+      "section": "SOLID",
+      "sectionId": "solid",
+      "file": "lessons/lesson-004.md",
+      "sha256": "7eec10bccd5c530d8656c3bafbf4275133b4f37ed7f51377d45170d20bdffd09"
+    },
+    {
+      "id": "lesson-005",
+      "number": 5,
+      "title": "Interface Segregation Principle",
+      "section": "SOLID",
+      "sectionId": "solid",
+      "file": "lessons/lesson-005.md",
+      "sha256": "cf612ded965950831d6a7e9ce012035b7aa9db1370b1e196dc36b34101a6189f"
+    },
+    {
+      "id": "lesson-006",
+      "number": 6,
+      "title": "Dependency Inversion Principle",
+      "section": "SOLID",
+      "sectionId": "solid",
+      "file": "lessons/lesson-006.md",
+      "sha256": "b77edde18dbe087f4b986f2704726d9a2effbb51788ebd2cb88197f4bc2be94f"
+    },
+    {
+      "id": "lesson-007",
+      "number": 7,
+      "title": "Factory Method Pattern",
+      "section": "Creational Patterns",
+      "sectionId": "creational-patterns",
+      "file": "lessons/lesson-007.md",
+      "sha256": "71b0a384fd242a22204c9a3929471fea18f20bc410973b3ca3d34421c4c1817d"
+    },
+    {
+      "id": "lesson-008",
+      "number": 8,
+      "title": "Abstract Factory Pattern",
+      "section": "Creational Patterns",
+      "sectionId": "creational-patterns",
+      "file": "lessons/lesson-008.md",
+      "sha256": "d73c0f7746a72a733a3566d061375524a6154cdba3a23ca72768f2917c242e90"
+    },
+    {
+      "id": "lesson-009",
+      "number": 9,
+      "title": "Builder Pattern",
+      "section": "Creational Patterns",
+      "sectionId": "creational-patterns",
+      "file": "lessons/lesson-009.md",
+      "sha256": "bf181a7c5e2b96c8bf45447917fbff9a0d12373938678e91ceb1f2038b1ac112"
+    },
+    {
+      "id": "lesson-010",
+      "number": 10,
+      "title": "Prototype Pattern",
+      "section": "Creational Patterns",
+      "sectionId": "creational-patterns",
+      "file": "lessons/lesson-010.md",
+      "sha256": "82f9f0b3ba0c708a47ba73f63330cb5910b8eed94f9ee1c751ff240b2e3ca4e4"
+    },
+    {
+      "id": "lesson-011",
+      "number": 11,
+      "title": "Singleton Pattern",
+      "section": "Creational Patterns",
+      "sectionId": "creational-patterns",
+      "file": "lessons/lesson-011.md",
+      "sha256": "b594d24241194cb6bf7006d4041ee88878302b677618cef6d7ad1d1581fba353"
+    },
+    {
+      "id": "lesson-012",
+      "number": 12,
+      "title": "Adapter Pattern",
+      "section": "Structural Patterns",
+      "sectionId": "structural-patterns",
+      "file": "lessons/lesson-012.md",
+      "sha256": "99fe4f12fd1f43c7aed9b5b741caef5e95b300b6b8e79c7c9e3c3d47b72a1086"
+    },
+    {
+      "id": "lesson-013",
+      "number": 13,
+      "title": "Decorator Pattern",
+      "section": "Structural Patterns",
+      "sectionId": "structural-patterns",
+      "file": "lessons/lesson-013.md",
+      "sha256": "5353510ede81fed96e1e6a695c5fd836bb285108e2b44e860b9cc8fae951d4f1"
+    },
+    {
+      "id": "lesson-014",
+      "number": 14,
+      "title": "Facade Pattern",
+      "section": "Structural Patterns",
+      "sectionId": "structural-patterns",
+      "file": "lessons/lesson-014.md",
+      "sha256": "a66b7b38373cff1e3dccdb57a87197cec1559c3b3b99202c7a7aa4306accb15c"
+    },
+    {
+      "id": "lesson-015",
+      "number": 15,
+      "title": "Composite Pattern",
+      "section": "Structural Patterns",
+      "sectionId": "structural-patterns",
+      "file": "lessons/lesson-015.md",
+      "sha256": "24f90cc845548c63002d0bf62f663c1b08d2a1b6fd40e411b681af597bbc0c4e"
+    },
+    {
+      "id": "lesson-016",
+      "number": 16,
+      "title": "Proxy Pattern",
+      "section": "Structural Patterns",
+      "sectionId": "structural-patterns",
+      "file": "lessons/lesson-016.md",
+      "sha256": "bef7817af459b7d69bc6eea884f6672a1be330bbbee9638c56745e056b1e7547"
+    },
+    {
+      "id": "lesson-017",
+      "number": 17,
+      "title": "Bridge Pattern",
+      "section": "Structural Patterns",
+      "sectionId": "structural-patterns",
+      "file": "lessons/lesson-017.md",
+      "sha256": "9646995aa97cec597a101acfbca241f6648b3c52baa10700d868bc54bb4c656f"
+    },
+    {
+      "id": "lesson-018",
+      "number": 18,
+      "title": "Flyweight Pattern",
+      "section": "Structural Patterns",
+      "sectionId": "structural-patterns",
+      "file": "lessons/lesson-018.md",
+      "sha256": "8dd31b8c88d9d79623fe3d02388ab8a8257538a0ec77f3c68ea5d95c31d5612a"
+    },
+    {
+      "id": "lesson-019",
+      "number": 19,
+      "title": "Strategy Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-019.md",
+      "sha256": "1faf40c6c24fe501d6c4786d2885fbfc5db7709d82c8f68c4efe92bb7d332002"
+    },
+    {
+      "id": "lesson-020",
+      "number": 20,
+      "title": "Observer Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-020.md",
+      "sha256": "c6800234f4ca6b9271141c93c6c94156877e3a0ecf30d114cb6808c3ef2680a6"
+    },
+    {
+      "id": "lesson-021",
+      "number": 21,
+      "title": "Command Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-021.md",
+      "sha256": "8168cbbcd2f38fc35c77ca4442813ad938ecce46b26811be97c125e09309c3a2"
+    },
+    {
+      "id": "lesson-022",
+      "number": 22,
+      "title": "State Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-022.md",
+      "sha256": "814ef01890c23e293d0bbb77cd78e7d019aa42f70c4362658c9a92b3b75ff108"
+    },
+    {
+      "id": "lesson-023",
+      "number": 23,
+      "title": "Template Method Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-023.md",
+      "sha256": "4edd96e1c744180175286eab658319f7f66ecd15e72d0298e0b1a8a3ddad33fa"
+    },
+    {
+      "id": "lesson-024",
+      "number": 24,
+      "title": "Chain of Responsibility Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-024.md",
+      "sha256": "a383ff6d9f1a3b642b6193f154d4db02f8e4ecef10372cc85ca70eebbf270789"
+    },
+    {
+      "id": "lesson-025",
+      "number": 25,
+      "title": "Iterator Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-025.md",
+      "sha256": "9a0407d9772cf8b2e431a34988a7fd464ced28dc600ea8375a983950ee78bebb"
+    },
+    {
+      "id": "lesson-026",
+      "number": 26,
+      "title": "Mediator Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-026.md",
+      "sha256": "8ef8e4df7f71fb0018e6c4ef325ac67c2977b08e2b867910bee09b055eac7895"
+    },
+    {
+      "id": "lesson-027",
+      "number": 27,
+      "title": "Memento Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-027.md",
+      "sha256": "cbae58c3f39aee7c114378097ee233871d28ed843683044fa9b6f45348fb2e85"
+    },
+    {
+      "id": "lesson-028",
+      "number": 28,
+      "title": "Visitor Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-028.md",
+      "sha256": "d7e8813b66132ac9a5298108da69067b1e8fecd8e7a936dde272093b9f37d765"
+    },
+    {
+      "id": "lesson-029",
+      "number": 29,
+      "title": "Interpreter Pattern",
+      "section": "Behavioral Patterns",
+      "sectionId": "behavioral-patterns",
+      "file": "lessons/lesson-029.md",
+      "sha256": "0cae6b63bc862dbadaafbe374b89d79af716ce6d122333f294ac9729bc0684e3"
+    },
+    {
+      "id": "lesson-030",
+      "number": 30,
+      "title": "How to Choose the Right Design Pattern",
+      "section": "Pattern Selection",
+      "sectionId": "pattern-selection",
+      "file": "lessons/lesson-030.md",
+      "sha256": "b0c64759e869b14ebb6e7040c3996e0b07c7fb7e2d131124b4a2c7ae3f692891"
+    }
+  ]
+}

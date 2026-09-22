@@ -1,0 +1,82 @@
+.popoverOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.popoverPanel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 280px;
+  background-color: var(--modal-bg);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  z-index: 50;
+  font-family: var(--font-sans);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--primary-text);
+  margin-bottom: 14px;
+}
+
+.section {
+  margin-bottom: 14px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-text);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.btnGroup {
+  display: flex;
+  background-color: var(--code-bg);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--subtle-border);
+  gap: 2px;
+}
+
+.optionBtn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--secondary-text);
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 550;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.optionBtn:hover {
+  color: var(--primary-text);
+}
+
+.optionBtnActive {
+  background-color: var(--card-bg);
+  color: var(--primary-text);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  font-weight: 650;
+}

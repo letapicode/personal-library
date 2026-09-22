@@ -1,0 +1,216 @@
+.readerContainer {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: var(--reader-bg);
+  position: relative;
+}
+
+/* Pinned Reading Progress Bar */
+.readingProgressBar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--sidebar-border, rgba(255, 255, 255, 0.07));
+  z-index: 30;
+}
+
+.readingProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  transition: width 0.08s linear;
+}
+
+.readerLayout {
+  display: flex;
+  justify-content: center;
+  padding: 36px 32px 100px;
+  position: relative;
+}
+
+.readerColumn {
+  width: 100%;
+  max-width: var(--reading-measure);
+  transition: max-width 0.2s ease;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.breadcrumbArea {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+}
+
+.breadcrumbLink {
+  background: transparent;
+  border: none;
+  color: var(--secondary-text);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.breadcrumbLink:hover {
+  color: var(--primary-text);
+  background-color: var(--sidebar-hover);
+}
+
+.breadcrumbSep {
+  color: var(--muted-text);
+}
+
+.breadcrumbCurrent {
+  color: var(--primary-text);
+  font-weight: 600;
+}
+
+.toggleSidebarBtn {
+  background: transparent;
+  border: 1px solid var(--subtle-border);
+  color: var(--secondary-text);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-family: var(--font-sans);
+  font-weight: 550;
+  transition: all 0.15s ease;
+}
+
+.toggleSidebarBtn:hover {
+  color: var(--primary-text);
+  background-color: var(--sidebar-hover);
+  border-color: var(--sidebar-border);
+}
+
+.actionButtonGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.actionBtn {
+  background: transparent;
+  border: 1px solid var(--subtle-border);
+  color: var(--secondary-text);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-family: var(--font-sans);
+  font-weight: 550;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.actionBtn:hover {
+  color: var(--primary-text);
+  background-color: var(--sidebar-hover);
+  border-color: var(--sidebar-border);
+}
+
+.actionBtnActive {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  background-color: var(--sidebar-hover);
+}
+
+.displayPrefsBtn {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 600;
+  font-style: italic;
+  padding: 5px 10px;
+}
+
+.lessonHeader {
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--subtle-border);
+}
+
+.metadataRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.sectionBadge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-primary);
+  background-color: var(--sidebar-hover);
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--subtle-border);
+  font-family: var(--font-sans);
+}
+
+.readingTimeBadge {
+  font-size: 12px;
+  color: var(--muted-text);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
+.lessonMainTitle {
+  font-family: var(--font-sans);
+  font-size: 34px;
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  color: var(--primary-text);
+}
+
+.contentWrapper {
+  font-size: var(--reading-size);
+  line-height: var(--reading-line-height);
+  color: var(--primary-text);
+}
+
+.rightRail {
+  margin-left: 56px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1240px) {
+  .rightRail {
+    display: none;
+  }
+}

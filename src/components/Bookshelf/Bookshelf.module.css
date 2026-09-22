@@ -1,0 +1,586 @@
+.bookshelfContainer {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--reader-bg);
+  color: var(--primary-text);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  font-family: var(--font-sans);
+}
+
+.topNavigation {
+  padding: 18px 36px;
+  border-bottom: 1px solid var(--sidebar-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--sidebar-bg);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brandIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.brandTitle {
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--primary-text);
+  line-height: 1.2;
+}
+
+.brandSubtitle {
+  font-size: 12px;
+  color: var(--secondary-text);
+  margin-top: 2px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background-color: var(--code-bg);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  gap: 8px;
+  width: 250px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.searchBox:focus-within {
+  border-color: var(--accent-primary);
+  width: 300px;
+  box-shadow: 0 0 0 2px rgba(226, 143, 174, 0.15);
+}
+
+.searchIcon {
+  color: var(--muted-text);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--primary-text);
+  width: 100%;
+}
+
+.cmdKBadge {
+  font-size: 10.5px;
+  font-family: var(--font-mono);
+  background-color: var(--card-bg);
+  border: 1px solid var(--subtle-border);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--muted-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.addBookBtn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.addBookBtn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.themeToggleBtn {
+  background-color: var(--code-bg);
+  border: 1px solid var(--sidebar-border);
+  color: var(--secondary-text);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.themeToggleBtn:hover {
+  color: var(--primary-text);
+  border-color: var(--subtle-border);
+}
+
+.shelfMain {
+  max-width: 1320px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 36px 36px 80px 36px;
+  flex: 1;
+}
+
+.shelfHeaderRow {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--subtle-border);
+  padding-bottom: 20px;
+}
+
+.shelfHeading {
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--primary-text);
+}
+
+.shelfSubheading {
+  font-size: 13.5px;
+  color: var(--secondary-text);
+  margin-top: 6px;
+}
+
+.shelfMeta {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--secondary-text);
+  background-color: var(--card-bg);
+  border: 1px solid var(--subtle-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+}
+
+.booksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+/* Tactile Book Card */
+.bookCard {
+  background-color: var(--card-bg);
+  border: 1px solid var(--subtle-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.bookCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--sidebar-border);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+}
+
+/* Tactile Book Cover */
+.bookCoverHeader {
+  height: 145px;
+  padding: 18px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* Genuine book spine binding bevel */
+.bookSpineBinding {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.15) 60%, rgba(255, 255, 255, 0.12) 100%);
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.bookCoverOverlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.14), transparent 60%);
+  pointer-events: none;
+}
+
+.coverTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+.categoryBadge {
+  font-size: 10.5px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 9px;
+  border-radius: var(--radius-xs);
+  background: rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.bookCoverMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 11.5px;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.bookCardBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.bookTitle {
+  font-size: 17px;
+  font-weight: 750;
+  line-height: 1.35;
+  color: var(--primary-text);
+  margin-bottom: 6px;
+  letter-spacing: -0.015em;
+}
+
+.bookSubtitle {
+  font-size: 12.5px;
+  color: var(--secondary-text);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.bookAuthor {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--muted-text);
+  margin-bottom: 12px;
+}
+
+.bookTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.tagChip {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  background-color: var(--code-bg);
+  border: 1px solid var(--subtle-border);
+  color: var(--secondary-text);
+}
+
+.bookFooter {
+  padding: 12px 20px;
+  border-top: 1px solid var(--subtle-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--sidebar-bg);
+}
+
+.progressInfo {
+  font-size: 12px;
+  color: var(--secondary-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.exportCardBtn {
+  background: transparent;
+  border: none;
+  color: var(--muted-text);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+}
+
+.exportCardBtn:hover {
+  color: var(--accent-pink);
+  background-color: var(--sidebar-hover);
+}
+
+.deleteBtn {
+  background: transparent;
+  border: none;
+  color: var(--muted-text);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+  display: flex;
+  align-items: center;
+}
+
+.deleteBtn:hover {
+  color: #ef4444;
+}
+
+.openArrow {
+  color: var(--muted-text);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+}
+
+.bookCard:hover .openArrow {
+  color: var(--accent-primary);
+  transform: translateX(3px);
+}
+
+.noResultsBox {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--secondary-text);
+  font-size: 15px;
+}
+
+.clearSearchBtnText {
+  margin-top: 12px;
+  background: transparent;
+  border: 1px solid var(--sidebar-border);
+  color: var(--primary-text);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.clearSearchBtnText:hover {
+  background-color: var(--sidebar-hover);
+}
+
+/* ─── Spotlight Hero Card ─── */
+.spotlightHero {
+  display: flex;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--subtle-border);
+  background-color: var(--card-bg);
+  cursor: pointer;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.spotlightHero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.spotlightCover {
+  position: relative;
+  width: 280px;
+  min-height: 200px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+}
+
+.spotlightCoverOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.spotlightBookInfo {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spotlightTitle {
+  font-size: 20px;
+  font-weight: 750;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.spotlightSubtitle {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+}
+
+.spotlightBody {
+  flex: 1;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.spotlightMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.spotlightAuthor {
+  color: var(--secondary-text);
+  font-weight: 500;
+}
+
+.spotlightChapters {
+  color: var(--muted-text);
+  font-size: 12px;
+  background-color: var(--code-bg);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--subtle-border);
+}
+
+.spotlightProgress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.spotlightProgressTrack {
+  flex: 1;
+  height: 5px;
+  background-color: var(--sidebar-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.spotlightProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.spotlightProgressText {
+  font-size: 12px;
+  color: var(--secondary-text);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.spotlightCta {
+  align-self: flex-start;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.spotlightCta:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* ─── Ghost "Add Book" Card ─── */
+.ghostAddCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 260px;
+  border: 2px dashed var(--subtle-border);
+  border-radius: var(--radius-lg);
+  color: var(--muted-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+.ghostAddCard:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background-color: var(--sidebar-hover);
+  transform: translateY(-2px);
+}
+
+.ghostAddHint {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--muted-text);
+  opacity: 0.7;
+}
+
+/* ─── Responsive: Spotlight stacks on small screens ─── */
+@media (max-width: 720px) {
+  .spotlightHero {
+    flex-direction: column;
+  }
+
+  .spotlightCover {
+    width: 100%;
+    min-height: 160px;
+  }
+
+  .spotlightBody {
+    padding: 20px 24px;
+  }
+}

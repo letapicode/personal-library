@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -e
+
+echo "============================================================"
+echo "   ChatGPT Course Reader & Engineering Library Launcher"
+echo "============================================================"
+echo ""
+
+# 1. Check Node.js
+if ! command -v node >/dev/null 2>&1; then
+    echo "[ERROR] Node.js is not installed!"
+    echo "Please install Node.js from https://nodejs.org/ (or via brew install node)"
+    exit 1
+fi
+
+# 2. Check npm
+if ! command -v npm >/dev/null 2>&1; then
+    echo "[ERROR] npm is not installed!"
+    exit 1
+fi
+
+# 3. Check node_modules
+if [ ! -d "node_modules" ]; then
+    echo "[1/2] First-time setup detected. Automatically installing all dependencies..."
+    npm install
+    echo "[OK] Dependencies installed successfully."
+else
+    echo "[OK] Dependencies verified."
+fi
+
+# 4. Launch Application
+echo "[2/2] Starting Engineering Library server..."
+
+# Open browser in background after short delay
+(
+    sleep 2
+    if command -v open >/dev/null 2>&1; then
+        open "http://localhost:3000"
+    elif command -v xdg-open >/dev/null 2>&1; then
+        xdg-open "http://localhost:3000"
+    fi
+) &
+
+npm run dev

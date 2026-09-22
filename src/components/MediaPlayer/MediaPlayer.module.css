@@ -1,0 +1,126 @@
+.mediaContainer {
+  margin: 24px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--code-bg);
+  border: 1px solid var(--sidebar-border);
+}
+
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.videoElement {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.audioWrapper {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.audioHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.audioTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.audioIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.audioTitle {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--primary-text);
+}
+
+.audioSubtitle {
+  font-size: 12px;
+  color: var(--secondary-text);
+}
+
+.audioControlsRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.audioElement {
+  width: 100%;
+  height: 36px;
+  border-radius: 8px;
+  outline: none;
+}
+
+.speedSelector {
+  display: flex;
+  align-items: center;
+  background-color: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-text);
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.speedSelector:hover {
+  border-color: var(--accent-pink);
+}
+
+.embedWrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.embedIframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.mediaCaption {
+  padding: 10px 16px;
+  font-size: 12.5px;
+  color: var(--secondary-text);
+  background-color: var(--sidebar-bg);
+  border-top: 1px solid var(--sidebar-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

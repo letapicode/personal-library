@@ -1,0 +1,22 @@
+{
+  appId: "com.chatgpt.coursereader",
+  productName: "ChatGPT Course Reader",
+  directories: {
+    output: "dist_electron"
+  },
+  files: [
+    "dist/**/*",
+    "dist_electron/**/*"
+  ],
+  mac: {
+    target: ["dmg", "zip"],
+    category: "public.app-category.education"
+  },
+  win: {
+    target: ["nsis", "portable"]
+  },
+  linux: {
+    target: ["AppImage", "deb"],
+    category: "Education"
+  }
+}

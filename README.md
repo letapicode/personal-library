@@ -1,0 +1,106 @@
+# Personal Library
+
+An elegant, offline-first universal book reader and personal bookshelf. Turn ChatGPT conversations, Claude chats, Markdown files, or textbooks into an interactive reading experience with syntax highlighting, automatic table of contents, reading progress tracking, and full book export.
+
+Designed for complete offline independence — clone the repository, run it locally, and start reading without external accounts, tracking, or cloud dependencies.
+
+---
+
+## ✨ Features
+
+- **Universal Book & Topic Support**: Read software engineering curricula, biology, medicine, literature, or notes. Section classification adapts dynamically to any subject.
+- **Multi-Provider Shared URL Ingestion**:
+  - **ChatGPT**: Paste any public ChatGPT shared conversation link to turn long multi-turn lessons into an organized book.
+  - **Claude**: Ingest Claude shared links directly or via simple paste.
+  - **Markdown & Web URLs**: Import direct `.md` files, GitHub raw files, or paste raw Markdown.
+- **Multilingual & Native Devanagari**: Full font stacks and resilient parser support for English, Hindi, Nepali, and Unicode numerals/scripts (`०-९`, `अध्याय`, `पाठ`).
+- **Interactive Reading Experience**:
+  - Automatic headings detection with an interactive **On This Page** Table of Contents.
+  - Pinned hairline reading progress bar.
+  - Custom font family (`Sans`, `Serif`, `Monospace`), font sizing, line height, and dark/light themes.
+  - Syntax highlighting with one-click code copying for Java, Python, TypeScript, Rust, Go, SQL, and more.
+- **Bookshelf Dashboard**:
+  - **Spotlight Hero Card**: Seamlessly resume reading your active book with progress stats and quick chapter jump links.
+  - Tactile physical book covers with category tags, custom book indicators, and search filter.
+- **Book Export**:
+  - Export any book with one click as a **single Markdown document (`.md`)** with a complete Table of Contents.
+  - Export as structured **JSON (`.json`)** for backup or external tool ingestion.
+- **100% Offline & Private**:
+  - Client-side **IndexedDB** two-tier storage for instantaneous loading.
+  - All reading progress, scroll anchors, and bookmarks stay private on your machine.
+- **Keyboard Navigation**:
+  - `⌘K` or `Ctrl+K`: Global Command Palette to search books, jump to chapters, toggle themes, or export.
+  - `Alt + ←` / `Alt + →`: Jump between previous and next chapters instantly.
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- `npm` or `bun`
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/your-username/personal-library.git
+cd personal-library
+
+# Install dependencies
+npm install
+
+# Start the local reader
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 🛠️ Available Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Starts Vite local development server on port 3000 |
+| `npm run run-library` | Convenience alias to start the library server |
+| `npm run build` | Compiles and optimizes assets into `dist/` |
+| `npm run preview` | Previews the production build locally |
+| `npm run lint` | Runs TypeScript type checking (`tsc --noEmit`) |
+
+---
+
+## 🔒 Security & Privacy
+
+- **Safe Content Rendering**: Markdown is rendered without raw HTML injection (`rehype-raw` is omitted). External links enforce `rel="noopener noreferrer"` and sanitize against `javascript:` URIs.
+- **Path Traversal Protection**: Static course serving is restricted to the dedicated `course-data/` root directory.
+- **SSRF Defense**: Remote URL fetchers reject local hostnames (`localhost`, `127.0.0.1`, `::1`), RFC 1918 private IPv4 subnets, and cloud metadata services (`169.254.169.254`).
+- **Content Security Policy (CSP)**: Pinned CSP in `index.html` blocks unauthorized script domains and frames.
+
+---
+
+## 📁 Repository Structure
+
+```text
+├── course-data/              # Seed curriculum (course.json and lesson markdown files)
+├── server/
+│   └── urlImporter.ts        # Server-side multi-provider URL ingestion (ChatGPT, Claude, raw)
+├── src/
+│   ├── components/
+│   │   ├── Bookshelf/        # Bookshelf dashboard, Spotlight hero, and add modal
+│   │   ├── CommandPalette/   # Global ⌘K / Ctrl+K keyboard palette
+│   │   ├── ExportBookModal/  # Markdown and JSON book exporter modal
+│   │   ├── LessonReader/     # Distraction-free reading environment
+│   │   ├── LessonTableOfContents/ # Scrollspy on-page TOC
+│   │   └── MarkdownRenderer/ # AST text extractor, syntax highlighter, and sanitized render
+│   ├── parser/               # Multi-topic and Devanagari lesson parser
+│   ├── storage/              # IndexedDB two-tier client storage and manifest
+│   └── types/                # TypeScript interfaces and manifest types
+├── vite.config.ts            # Vite build configuration and secure proxy API
+└── package.json
+```
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).

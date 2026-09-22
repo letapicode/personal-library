@@ -1,0 +1,55 @@
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--subtle-border);
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 1px solid var(--subtle-border);
+  color: var(--primary-text);
+  padding: 12px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.navBtn:hover:not(:disabled) {
+  background-color: var(--sidebar-hover);
+  border-color: #403e40;
+}
+
+.navBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btnText {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.btnTextRight {
+  text-align: right;
+}
+
+.btnSub {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--secondary-text);
+  letter-spacing: 0.05em;
+}
+
+.btnTitle {
+  font-weight: 600;
+  color: var(--primary-text);
+}

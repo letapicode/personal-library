@@ -1,0 +1,165 @@
+:root {
+  /* Typography Foundations with Native Devanagari (Hindi, Nepali) Support */
+  --font-sans: 'Plus Jakarta Sans', 'Noto Sans Devanagari', 'Nirmala UI', 'Kohinoor Devanagari', 'Mangal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: 'Newsreader', 'Noto Serif Devanagari', 'Nirmala UI', 'Mangal', Georgia, Cambria, "Times New Roman", serif;
+  --font-mono: 'JetBrains Mono', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+  /* Reading Preferences (dynamic via data-attributes or CSS vars) */
+  --reading-font: var(--font-sans);
+  --reading-size: 17px;
+  --reading-line-height: 1.72;
+  --reading-measure: 68ch;
+
+  /* Normalized Radii Scale */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Dark Theme Surfaces: Tiered Warm Obsidian */
+  --reader-bg: #0e0d12;
+  --sidebar-bg: #141318;
+  --card-bg: #1a1920;
+  --code-bg: #16151b;
+  --modal-bg: #1d1b24;
+
+  /* Borders & Dividers */
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --subtle-border: rgba(255, 255, 255, 0.05);
+  --sidebar-hover: rgba(255, 255, 255, 0.04);
+  --sidebar-active: rgba(255, 255, 255, 0.08);
+  --blockquote-bar: #5c5469;
+
+  /* Text Contrast Hierarchy (WCAG AA Compliant) */
+  --primary-text: #f6f4f8;
+  --secondary-text: #aba4b3;
+  --muted-text: #787182;
+
+  /* Accent Signatures */
+  --accent-primary: #e28fae;
+  --accent-secondary: #b58eee;
+  --accent-pink: #e28fae;
+  --accent-lavender: #b58eee;
+  --accent-emerald: #34d399;
+  --accent-amber: #fbbf24;
+  --selection-bg: rgba(226, 143, 174, 0.28);
+
+  /* Code Syntax Theme */
+  --syn-keyword: #e28fae;
+  --syn-type: #caa1f3;
+  --syn-method: #93b5ff;
+  --syn-string: #a7f3d0;
+  --syn-number: #fcd34d;
+  --syn-annotation: #f472b6;
+  --syn-comment: #726b7c;
+  --syn-punctuation: #ded9e3;
+  --syn-ident: #ece8f0;
+}
+
+[data-theme='light'] {
+  /* Light Theme Surfaces: Editorial Warm Paper */
+  --reader-bg: #faf8f5;
+  --sidebar-bg: #f2efe9;
+  --card-bg: #ffffff;
+  --code-bg: #ede8e1;
+  --modal-bg: #ffffff;
+
+  /* Borders & Dividers */
+  --sidebar-border: rgba(0, 0, 0, 0.08);
+  --subtle-border: rgba(0, 0, 0, 0.05);
+  --sidebar-hover: rgba(0, 0, 0, 0.035);
+  --sidebar-active: rgba(0, 0, 0, 0.07);
+  --blockquote-bar: #8b8396;
+
+  /* Text Contrast Hierarchy */
+  --primary-text: #1b191e;
+  --secondary-text: #504a57;
+  --muted-text: #7b7484;
+
+  /* Accent Signatures */
+  --accent-primary: #9e2a61;
+  --accent-secondary: #67269f;
+  --accent-pink: #9e2a61;
+  --accent-lavender: #67269f;
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+  --selection-bg: rgba(158, 42, 97, 0.16);
+
+  /* Code Syntax Theme */
+  --syn-keyword: #a21c5b;
+  --syn-type: #6b21a8;
+  --syn-method: #1d4ed8;
+  --syn-string: #047857;
+  --syn-number: #b45309;
+  --syn-annotation: #be185d;
+  --syn-comment: #6b6574;
+  --syn-punctuation: #1e1c22;
+  --syn-ident: #16141a;
+}
+
+/* User-controlled reading font styles */
+[data-reading-font='serif'] {
+  --reading-font: var(--font-serif);
+}
+[data-reading-font='sans'] {
+  --reading-font: var(--font-sans);
+}
+
+[data-reading-size='compact'] {
+  --reading-size: 15.5px;
+  --reading-line-height: 1.68;
+}
+[data-reading-size='default'] {
+  --reading-size: 17px;
+  --reading-line-height: 1.72;
+}
+[data-reading-size='large'] {
+  --reading-size: 19px;
+  --reading-line-height: 1.76;
+}
+
+[data-reading-measure='comfortable'] {
+  --reading-measure: 68ch;
+}
+[data-reading-measure='wide'] {
+  --reading-measure: 86ch;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--reader-bg);
+  color: var(--primary-text);
+  overflow: hidden;
+  user-select: text;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: inherit;
+}
+
+/* Minimalist refined scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 113, 130, 0.28);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 113, 130, 0.45);
+}

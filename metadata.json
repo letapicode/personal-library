@@ -1,0 +1,6 @@
+{
+  "name": "ChatGPT Course Reader",
+  "description": "Offline desktop and web reader for ChatGPT programming and software design courses with syntax highlighting and lesson navigation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
