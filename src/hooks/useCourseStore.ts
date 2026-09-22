@@ -97,19 +97,21 @@ export function useCourseStore() {
 
   const selectLesson = (id: string) => {
     setActiveLessonId(id);
-    if (activeBook) {
+    setActiveBook(prev => {
+      if (!prev) return null;
       const updatedBook: Book = {
-        ...activeBook,
+        ...prev,
         lastReadLessonId: id
       };
-      setActiveBook(updatedBook);
       saveBookToStorage(updatedBook);
 
       // Update manifest metadata
-      setManifest(prev =>
-        prev.map(m => (m.id === activeBook.id ? { ...m, lastReadLessonId: id } : m))
+      setManifest(mPrev =>
+        mPrev.map(m => (m.id === prev.id ? { ...m, lastReadLessonId: id } : m))
       );
-    }
+
+      return updatedBook;
+    });
 
     savePreferencesToStorage({
       activeBookId,
@@ -122,31 +124,33 @@ export function useCourseStore() {
   };
 
   const saveScrollPosition = (lessonId: string, pos: number) => {
-    const updated = { ...scrollPositions, [lessonId]: pos };
-    setScrollPositions(updated);
+    setScrollPositions(prev => ({ ...prev, [lessonId]: pos }));
 
-    if (activeBook) {
+    setActiveBook(prev => {
+      if (!prev) return null;
+      const updatedScroll = { ...prev.scrollPositions, [lessonId]: pos };
       const updatedBook: Book = {
-        ...activeBook,
-        scrollPositions: updated
+        ...prev,
+        scrollPositions: updatedScroll
       };
-      setActiveBook(updatedBook);
       saveBookToStorage(updatedBook);
-    }
+      return updatedBook;
+    });
   };
 
   const saveMediaTime = (mediaKey: string, time: number) => {
-    const updated = { ...mediaProgress, [mediaKey]: time };
-    setMediaProgress(updated);
+    setMediaProgress(prev => ({ ...prev, [mediaKey]: time }));
 
-    if (activeBook) {
+    setActiveBook(prev => {
+      if (!prev) return null;
+      const updatedMedia = { ...prev.mediaProgress, [mediaKey]: time };
       const updatedBook: Book = {
-        ...activeBook,
-        mediaProgress: updated
+        ...prev,
+        mediaProgress: updatedMedia
       };
-      setActiveBook(updatedBook);
       saveBookToStorage(updatedBook);
-    }
+      return updatedBook;
+    });
   };
 
   const toggleSidebar = () => {
@@ -176,64 +180,73 @@ export function useCourseStore() {
   };
 
   const toggleBookmark = (lessonId: string) => {
-    if (!activeBook) return;
-    const nextLessons = activeBook.lessons.map(l =>
-      l.id === lessonId ? { ...l, bookmarked: !l.bookmarked } : l
-    );
-    const updatedBook: Book = { ...activeBook, lessons: nextLessons };
-    setActiveBook(updatedBook);
-    saveBookToStorage(updatedBook);
+    setActiveBook(prev => {
+      if (!prev) return null;
+      const nextLessons = prev.lessons.map(l =>
+        l.id === lessonId ? { ...l, bookmarked: !l.bookmarked } : l
+      );
+      const updatedBook: Book = { ...prev, lessons: nextLessons };
+      saveBookToStorage(updatedBook);
+      return updatedBook;
+    });
   };
 
   const toggleComplete = (lessonId: string) => {
-    if (!activeBook) return;
-    const nextLessons = activeBook.lessons.map(l =>
-      l.id === lessonId ? { ...l, completed: !l.completed } : l
-    );
-    const completedCount = nextLessons.filter(l => l.completed).length;
+    setActiveBook(prev => {
+      if (!prev) return null;
+      const nextLessons = prev.lessons.map(l =>
+        l.id === lessonId ? { ...l, completed: !l.completed } : l
+      );
+      const completedCount = nextLessons.filter(l => l.completed).length;
 
-    const updatedBook: Book = {
-      ...activeBook,
-      lessons: nextLessons,
-      completedLessons: completedCount
-    };
-    setActiveBook(updatedBook);
-    saveBookToStorage(updatedBook);
+      const updatedBook: Book = {
+        ...prev,
+        lessons: nextLessons,
+        completedLessons: completedCount
+      };
+      saveBookToStorage(updatedBook);
 
-    // Sync to manifest
-    setManifest(prev =>
-      prev.map(m => (m.id === activeBook.id ? { ...m, completedLessons: completedCount } : m))
-    );
+      // Sync to manifest
+      setManifest(mPrev =>
+        mPrev.map(m => (m.id === prev.id ? { ...m, completedLessons: completedCount } : m))
+      );
+
+      return updatedBook;
+    });
   };
 
   const updateActiveBookLessons = (newLessons: Lesson[]) => {
-    if (!activeBook) return;
     const completedCount = newLessons.filter(l => l.completed).length;
 
-    // Preserve the currently active lesson if it still exists in the updated curriculum
-    const currentLessonStillExists = Boolean(activeLessonId && newLessons.some(l => l.id === activeLessonId));
-    const targetLessonId: string | undefined = currentLessonStillExists
-      ? (activeLessonId || undefined)
-      : newLessons[0]?.id;
+    setActiveBook(prev => {
+      if (!prev) return null;
 
-    const updatedBook: Book = {
-      ...activeBook,
-      lessons: newLessons,
-      totalLessons: newLessons.length,
-      completedLessons: completedCount,
-      lastReadLessonId: targetLessonId
-    };
+      // Preserve the currently active lesson if it still exists in the updated curriculum
+      const currentLessonStillExists = Boolean(activeLessonId && newLessons.some(l => l.id === activeLessonId));
+      const targetLessonId: string | undefined = currentLessonStillExists
+        ? (activeLessonId || undefined)
+        : newLessons[0]?.id;
 
-    setActiveBook(updatedBook);
-    saveBookToStorage(updatedBook);
+      const updatedBook: Book = {
+        ...prev,
+        lessons: newLessons,
+        totalLessons: newLessons.length,
+        completedLessons: completedCount,
+        lastReadLessonId: targetLessonId
+      };
 
-    // Update manifest
-    const meta = extractMetadata(updatedBook);
-    setManifest(prev => prev.map(m => (m.id === activeBook.id ? meta : m)));
+      saveBookToStorage(updatedBook);
 
-    if (targetLessonId && targetLessonId !== activeLessonId) {
-      setActiveLessonId(targetLessonId);
-    }
+      // Update manifest
+      const meta = extractMetadata(updatedBook);
+      setManifest(mPrev => mPrev.map(m => (m.id === prev.id ? meta : m)));
+
+      if (targetLessonId && targetLessonId !== activeLessonId) {
+        setActiveLessonId(targetLessonId);
+      }
+
+      return updatedBook;
+    });
   };
 
   const addBook = async (newBook: Book) => {

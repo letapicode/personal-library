@@ -22,7 +22,7 @@ echo.
 echo Script location: %SCRIPT_PATH%
 echo.
 :: Unblock all downloaded files in the folder so Windows Security doesn't prompt
-powershell -NoProfile -Command "Get-ChildItem -Path '%SCRIPT_DIR%' -Recurse | Unblock-File -ErrorAction SilentlyContinue" >nul 2>&1
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-ChildItem -LiteralPath '%SCRIPT_DIR%' -Recurse -ErrorAction SilentlyContinue | Unblock-File -ErrorAction SilentlyContinue" >nul 2>&1
 :: Register in HKCU (no admin rights needed)
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\run-library.cmd" /ve /d "\"%SCRIPT_PATH%\"" /f >nul 2>&1
 if %ERRORLEVEL% neq 0 (

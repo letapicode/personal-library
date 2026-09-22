@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import styles from './LessonTableOfContents.module.css';
 
 export function generateHeadingId(text: string): string {
@@ -42,11 +42,20 @@ interface Props {
 
 export const LessonTableOfContents: React.FC<Props> = ({ markdown }) => {
   const [activeId, setActiveId] = useState<string>('');
+  const rafPendingRef = useRef<boolean>(false);
 
   const items = useMemo(() => {
     const list: TOCItem[] = [];
     const lines = markdown.split(/\r?\n/);
     let inCodeFence = false;
+    const idCounts = new Map<string, number>();
+
+    const getUniqueId = (text: string): string => {
+      const baseId = generateHeadingId(text);
+      const count = idCounts.get(baseId) || 0;
+      idCounts.set(baseId, count + 1);
+      return count === 0 ? baseId : `${baseId}-${count + 1}`;
+    };
 
     // Pattern matching document/chapter title to exclude from internal TOC
     const chapterTitlePattern = /^(?:#{1,4}\s+)?(?:\*{1,2})?(?:LESSON|Lesson|MODULE|Module|CHAPTER|Chapter|UNIT|Unit|ACT|Act|PART|Part|SECTION|Section|अध्याय|पाठ|खण्ड|भाग|इकाई)\s+(?:[0-9०-९]+|[IVXLCDM]+)[\s*]*[:—–\-|\.]/iu;
@@ -66,19 +75,19 @@ export const LessonTableOfContents: React.FC<Props> = ({ markdown }) => {
           const cleanText = rawHeading.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[`*_~]/g, '').trim();
           const isDocTitle = i < 15 && (chapterTitlePattern.test(line) || numberedPattern.test(line));
           if (cleanText && !isDocTitle) {
-            list.push({ id: generateHeadingId(cleanText), text: cleanText, level: 1 });
+            list.push({ id: getUniqueId(cleanText), text: cleanText, level: 1 });
           }
         } else if (line.startsWith('## ')) {
           const rawHeading = line.replace(/^##\s+/, '').trim();
           const cleanText = rawHeading.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[`*_~]/g, '').trim();
           if (cleanText) {
-            list.push({ id: generateHeadingId(cleanText), text: cleanText, level: 2 });
+            list.push({ id: getUniqueId(cleanText), text: cleanText, level: 2 });
           }
         } else if (line.startsWith('### ')) {
           const rawHeading = line.replace(/^###\s+/, '').trim();
           const cleanText = rawHeading.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[`*_~]/g, '').trim();
           if (cleanText) {
-            list.push({ id: generateHeadingId(cleanText), text: cleanText, level: 3 });
+            list.push({ id: getUniqueId(cleanText), text: cleanText, level: 3 });
           }
         }
       }
@@ -93,35 +102,48 @@ export const LessonTableOfContents: React.FC<Props> = ({ markdown }) => {
     const scrollContainer = document.getElementById('main-reader');
     if (!scrollContainer) return;
 
+    let rafId: number | null = null;
+
     const checkActiveHeading = () => {
-      const headingElements = items
-        .map(item => document.getElementById(item.id))
-        .filter((el): el is HTMLElement => el !== null);
+      if (rafPendingRef.current) return;
+      rafPendingRef.current = true;
 
-      if (headingElements.length === 0) return;
+      rafId = requestAnimationFrame(() => {
+        rafPendingRef.current = false;
 
-      const containerRect = scrollContainer.getBoundingClientRect();
-      const topOffset = containerRect.top + 90;
+        const headingElements = items
+          .map(item => document.getElementById(item.id))
+          .filter((el): el is HTMLElement => el !== null);
 
-      // Find the heading that is closest to or just above topOffset
-      let currentActive = headingElements[0].id;
+        if (headingElements.length === 0) return;
 
-      for (const el of headingElements) {
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= topOffset) {
-          currentActive = el.id;
-        } else {
-          break;
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const topOffset = containerRect.top + 90;
+
+        // Find the heading that is closest to or just above topOffset
+        let currentActive = headingElements[0].id;
+
+        for (const el of headingElements) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= topOffset) {
+            currentActive = el.id;
+          } else {
+            break;
+          }
         }
-      }
 
-      setActiveId(currentActive);
+        setActiveId(currentActive);
+      });
     };
 
     checkActiveHeading();
     scrollContainer.addEventListener('scroll', checkActiveHeading, { passive: true });
     return () => {
       scrollContainer.removeEventListener('scroll', checkActiveHeading);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+      rafPendingRef.current = false;
     };
   }, [items]);
 

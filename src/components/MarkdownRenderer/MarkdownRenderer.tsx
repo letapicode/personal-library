@@ -53,6 +53,15 @@ function extractNodeText(node: React.ReactNode): string {
 }
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
+  const idCounts = new Map<string, number>();
+
+  const getUniqueId = (text: string): string => {
+    const baseId = generateHeadingId(text);
+    const count = idCounts.get(baseId) || 0;
+    idCounts.set(baseId, count + 1);
+    return count === 0 ? baseId : `${baseId}-${count + 1}`;
+  };
+
   return (
     <div className={styles.markdownContainer}>
       <ReactMarkdown
@@ -95,7 +104,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           },
           h1({ children }) {
             const text = extractNodeText(children).trim();
-            const id = text ? generateHeadingId(text) : undefined;
+            const id = text ? getUniqueId(text) : undefined;
             return (
               <h1 id={id} className={styles.h1}>
                 {children}
@@ -104,7 +113,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           },
           h2({ children }) {
             const text = extractNodeText(children).trim();
-            const id = text ? generateHeadingId(text) : undefined;
+            const id = text ? getUniqueId(text) : undefined;
             return (
               <h2 id={id} className={styles.h2}>
                 {children}
@@ -113,7 +122,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           },
           h3({ children }) {
             const text = extractNodeText(children).trim();
-            const id = text ? generateHeadingId(text) : undefined;
+            const id = text ? getUniqueId(text) : undefined;
             return (
               <h3 id={id} className={styles.h3}>
                 {children}

@@ -1,3 +1,5 @@
+import dns from 'node:dns/promises';
+
 export interface ImportResult {
   title?: string;
   markdown: string;
@@ -35,13 +37,27 @@ async function importFromChatGpt(url: string, assistantOnly = true): Promise<Imp
   const shareId = shareMatch[1];
   const apiUrl = `https://chatgpt.com/backend-api/share/${shareId}`;
 
-  const res = await fetch(apiUrl, {
-    headers: {
-      'User-Agent': USER_AGENT,
-      'Accept': 'application/json, text/plain, */*',
-      'Referer': url
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15_000);
+
+  let res: Response;
+  try {
+    res = await fetch(apiUrl, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': USER_AGENT,
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': url
+      }
+    });
+  } catch (err: any) {
+    if (err.name === 'AbortError') {
+      throw new Error('Request to ChatGPT share link timed out after 15 seconds');
     }
-  });
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!res.ok) {
     if (res.status === 404) {
@@ -130,8 +146,12 @@ async function importFromChatGpt(url: string, assistantOnly = true): Promise<Imp
  * Imports from Claude shared links.
  */
 async function importFromClaude(url: string): Promise<ImportResult> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15_000);
+
   try {
     const res = await fetch(url, {
+      signal: controller.signal,
       headers: {
         'User-Agent': USER_AGENT,
         'Accept': 'text/html,application/xhtml+xml'
@@ -168,7 +188,12 @@ async function importFromClaude(url: string): Promise<ImportResult> {
       }
     }
   } catch (err: any) {
+    if (err.name === 'AbortError') {
+      throw new Error('Request to Claude share link timed out after 15 seconds');
+    }
     if (err.message && err.message.includes('Cloudflare')) throw err;
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   throw new Error(
@@ -177,10 +202,58 @@ async function importFromClaude(url: string): Promise<ImportResult> {
 }
 
 /**
- * Checks if a hostname belongs to localhost, private LAN, or cloud metadata services.
+ * Validates whether an IP address belongs to loopback, private RFC 1918,
+ * link-local/cloud-metadata RFC 3927, carrier-grade NAT, or IPv6 private/local ranges.
  */
-function isBlockedHostname(hostname: string): boolean {
-  const host = hostname.toLowerCase();
+export function isPrivateOrBlockedIp(ip: string): boolean {
+  // IPv4-mapped IPv6 (e.g. ::ffff:127.0.0.1)
+  const mappedMatch = ip.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
+  const cleanIp = mappedMatch ? mappedMatch[1] : ip;
+
+  // IPv4 validation
+  const ipv4Parts = cleanIp.split('.').map(Number);
+  if (ipv4Parts.length === 4 && ipv4Parts.every(n => Number.isInteger(n) && n >= 0 && n <= 255)) {
+    const [b0, b1] = ipv4Parts;
+    // 0.0.0.0/8 (current network)
+    if (b0 === 0) return true;
+    // 127.0.0.0/8 (loopback)
+    if (b0 === 127) return true;
+    // 10.0.0.0/8 (private)
+    if (b0 === 10) return true;
+    // 172.16.0.0/12 (private: 172.16 - 172.31)
+    if (b0 === 172 && b1 >= 16 && b1 <= 31) return true;
+    // 192.168.0.0/16 (private)
+    if (b0 === 192 && b1 === 168) return true;
+    // 169.254.0.0/16 (link-local, cloud metadata)
+    if (b0 === 169 && b1 === 254) return true;
+    // 100.64.0.0/10 (carrier-grade NAT: 100.64 - 100.127)
+    if (b0 === 100 && b1 >= 64 && b1 <= 127) return true;
+    // 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24 (documentation)
+    if (b0 === 192 && b1 === 0 && ipv4Parts[2] === 2) return true;
+    if (b0 === 198 && b1 === 51 && ipv4Parts[2] === 100) return true;
+    if (b0 === 203 && b1 === 0 && ipv4Parts[2] === 113) return true;
+    // 224.0.0.0/4 (multicast) & 240.0.0.0/4 (reserved)
+    if (b0 >= 224) return true;
+    return false;
+  }
+
+  // IPv6 validation
+  const lowerIpv6 = cleanIp.toLowerCase();
+  // Loopback (::1) or Unspecified (::)
+  if (lowerIpv6 === '::1' || lowerIpv6 === '::' || /^0*(:0*)*:?1$/.test(lowerIpv6)) return true;
+  // Link-local: fe80::/10 (fe80 to febf)
+  if (/^fe[89ab][0-9a-f]:/i.test(lowerIpv6)) return true;
+  // Unique local: fc00::/7 (fc00 to fdff)
+  if (/^f[cd][0-9a-f]{2}:/i.test(lowerIpv6)) return true;
+
+  return false;
+}
+
+/**
+ * Checks if a hostname belongs to localhost, private LAN, or numeric/hex encoded IP formats.
+ */
+export function isBlockedHostname(hostname: string): boolean {
+  const host = hostname.toLowerCase().trim();
   if (
     host === 'localhost' ||
     host === '127.0.0.1' ||
@@ -188,68 +261,135 @@ function isBlockedHostname(hostname: string): boolean {
     host === '0.0.0.0' ||
     host === '169.254.169.254' ||
     host.endsWith('.local') ||
-    host.endsWith('.internal')
+    host.endsWith('.internal') ||
+    host.endsWith('.localhost') ||
+    host.endsWith('.lan')
   ) {
     return true;
   }
-  // Private IPv4 ranges (RFC 1918 & link-local)
-  if (/^10\.\d+\.\d+\.\d+$/.test(host)) return true;
-  if (/^172\.(1[6-9]|2\d|3[01])\.\d+\.\d+$/.test(host)) return true;
-  if (/^192\.168\.\d+\.\d+$/.test(host)) return true;
-  if (/^127\.\d+\.\d+\.\d+$/.test(host)) return true;
-  if (/^169\.254\.\d+\.\d+$/.test(host)) return true;
+
+  // Pure integer / dword or hex/octal encoded hostnames (e.g. 2130706433 or 0x7f000001)
+  if (/^\d+$/.test(host) || /^0x[0-9a-f]+$/i.test(host)) return true;
+
+  // Check if raw hostname is already a private IP
+  if (isPrivateOrBlockedIp(host)) return true;
+
   return false;
 }
 
 /**
- * Imports raw markdown or plaintext from direct file URLs (e.g. GitHub raw, Gist, web markdown).
- * Protected against SSRF, intranet scanning, and memory exhaustion.
+ * Resolves all DNS IP records for a hostname and ensures none point to forbidden internal addresses.
  */
-async function importFromRawUrl(url: string): Promise<ImportResult> {
-  const parsed = new URL(url);
-  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
-    throw new Error('Only HTTP and HTTPS URLs are supported');
-  }
-
-  if (isBlockedHostname(parsed.hostname)) {
+export async function assertSafeDnsTarget(hostname: string): Promise<void> {
+  if (isBlockedHostname(hostname)) {
     throw new Error('Access to local or private network addresses is forbidden');
   }
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout
-
   try {
-    const res = await fetch(url, {
-      headers: { 'User-Agent': USER_AGENT },
-      signal: controller.signal
-    });
+    const records = await dns.lookup(hostname, { all: true });
+    for (const rec of records) {
+      if (isPrivateOrBlockedIp(rec.address)) {
+        throw new Error('Resolved IP address belongs to forbidden private or local network range');
+      }
+    }
+  } catch (err: any) {
+    if (err.message && err.message.includes('forbidden')) throw err;
+    throw new Error(`DNS resolution failed for hostname "${hostname}": ${err.message || 'unknown error'}`);
+  }
+}
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch file: HTTP ${res.status}`);
+const MAX_FILE_BYTES = 15 * 1024 * 1024; // 15MB limit
+
+/**
+ * Imports raw markdown or plaintext from direct file URLs (e.g. GitHub raw, Gist, web markdown).
+ * Protected against SSRF, DNS rebinding, redirect hijacking, and streaming memory exhaustion.
+ */
+async function importFromRawUrl(initialUrl: string): Promise<ImportResult> {
+  let currentUrl = initialUrl;
+  let redirectsRemaining = 3;
+
+  while (true) {
+    const parsed = new URL(currentUrl);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      throw new Error('Only HTTP and HTTPS URLs are supported');
     }
 
-    const contentLength = res.headers.get('content-length');
-    if (contentLength && parseInt(contentLength, 10) > 15 * 1024 * 1024) {
-      throw new Error('Remote file exceeds maximum allowed size (15MB)');
+    // Strict DNS and IP pre-flight validation
+    await assertSafeDnsTarget(parsed.hostname);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout
+
+    try {
+      const res = await fetch(currentUrl, {
+        headers: { 'User-Agent': USER_AGENT },
+        signal: controller.signal,
+        redirect: 'manual'
+      });
+
+      // Handle redirects manually to validate destination IP against SSRF
+      if (res.status >= 300 && res.status < 400) {
+        const location = res.headers.get('location');
+        if (!location) {
+          throw new Error(`Redirect response HTTP ${res.status} missing location header`);
+        }
+        if (redirectsRemaining <= 0) {
+          throw new Error('Too many HTTP redirects');
+        }
+        redirectsRemaining--;
+        currentUrl = new URL(location, currentUrl).toString();
+        continue;
+      }
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch file: HTTP ${res.status}`);
+      }
+
+      const contentLength = res.headers.get('content-length');
+      if (contentLength && parseInt(contentLength, 10) > MAX_FILE_BYTES) {
+        throw new Error('Remote file exceeds maximum allowed size (15MB)');
+      }
+
+      // Safe bounded stream reader to prevent memory exhaustion from chunked/infinite streams
+      let text = '';
+      if (res.body && typeof res.body.getReader === 'function') {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let bytesReceived = 0;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (value) {
+            bytesReceived += value.byteLength;
+            if (bytesReceived > MAX_FILE_BYTES) {
+              await reader.cancel();
+              throw new Error('Remote file exceeds maximum allowed size (15MB)');
+            }
+            text += decoder.decode(value, { stream: true });
+          }
+        }
+        text += decoder.decode(); // flush remaining characters
+      } else {
+        text = await res.text();
+        if (text.length > MAX_FILE_BYTES) {
+          throw new Error('Remote file exceeds maximum allowed size (15MB)');
+        }
+      }
+
+      const urlParts = parsed.pathname.split('/');
+      const rawFileName = urlParts[urlParts.length - 1] || 'Imported Book';
+      const cleanTitle = decodeURIComponent(rawFileName).replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+
+      return {
+        title: cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1),
+        markdown: text,
+        provider: 'raw-url',
+        messageCount: 1
+      };
+    } finally {
+      clearTimeout(timeoutId);
     }
-
-    const text = await res.text();
-    if (text.length > 15 * 1024 * 1024) {
-      throw new Error('Remote file exceeds maximum allowed size (15MB)');
-    }
-
-    const urlParts = parsed.pathname.split('/');
-    const rawFileName = urlParts[urlParts.length - 1] || 'Imported Book';
-    const cleanTitle = decodeURIComponent(rawFileName).replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
-
-    return {
-      title: cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1),
-      markdown: text,
-      provider: 'raw-url',
-      messageCount: 1
-    };
-  } finally {
-    clearTimeout(timeoutId);
   }
 }
 

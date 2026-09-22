@@ -138,11 +138,15 @@ async function extractViaHeadlessWindow(url: string, assistantOnly: boolean): Pr
     }
   });
 
+  let isAborted = false;
+
   const extractionPromise = (async () => {
+    if (isAborted || hiddenWin.isDestroyed()) throw new Error('Extraction aborted');
     await hiddenWin.loadURL(url, { waitUntil: 'domcontentloaded' });
     // Allow initial client-side hydration
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
+    if (isAborted || hiddenWin.isDestroyed()) throw new Error('Extraction aborted');
     const result = await hiddenWin.webContents.executeJavaScript(`
       (async () => {
         // Progressive scrolling to force DOM hydration of all virtualized messages in long threads
@@ -227,6 +231,7 @@ async function extractViaHeadlessWindow(url: string, assistantOnly: boolean): Pr
   try {
     return await Promise.race([extractionPromise, timeoutPromise]);
   } finally {
+    isAborted = true;
     if (!hiddenWin.isDestroyed()) {
       hiddenWin.destroy();
     }

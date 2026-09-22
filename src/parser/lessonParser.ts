@@ -14,25 +14,53 @@ import { classifyLessonSection } from './sectionClassifier.ts';
 /**
  * Resilient regex matching standalone Chapter/Lesson/Part headings.
  * Supports English (Lesson, Chapter, Module, Unit, Act) and Devanagari (अध्याय, पाठ, इकाई).
- * Supports Arabic numerals (0-9) and Devanagari numerals (०-९).
+ * Supports Arabic numerals (0-9), Devanagari numerals (०-९), and Roman numerals (I, IV, X, L, C, D, M).
  */
-const LESSON_HEADING_REGEX = /^(?:#{1,4}\s+)?(?:\*{1,2})?(?:LESSON|Lesson|MODULE|Module|CHAPTER|Chapter|UNIT|Unit|ACT|Act|अध्याय|पाठ|इकाई)\s+([0-9०-९]+)[\s*]*[:—–\-|\.]\s*(.+?)(?:\*{1,2})?$/iu;
+const LESSON_HEADING_REGEX = /^(?:#{1,4}\s+)?(?:\*{1,2})?(?:LESSON|Lesson|MODULE|Module|CHAPTER|Chapter|UNIT|Unit|ACT|Act|अध्याय|पाठ|इकाई)\s+([0-9०-९]+|[IVXLCDM]+)[\s*]*[:—–\-|\.]\s*(.+?)(?:\*{1,2})?$/iu;
 
 /**
- * Regex detecting standalone Part/Section headers (e.g. # Part 1: Foundations, # भाग १: सिद्धान्त, # खण्ड: जीव विज्ञान)
+ * Regex detecting standalone Part/Section headers (e.g. # Part 1: Foundations, # Part 1, # भाग १: सिद्धान्त, # खण्ड: जीव विज्ञान)
  */
-const SECTION_HEADING_REGEX = /^(?:#{1,3}\s+)(?:PART|Part|SECTION|Section|भाग|खण्ड)\s*(?:(?:[0-9०-९]+|[IVXLCDM]+)[\s:—–\-]+)?([^\n#]+)$/iu;
+const SECTION_HEADING_REGEX = /^(?:#{1,3}\s+)(PART|Part|SECTION|Section|भाग|खण्ड)\s*(?:([0-9०-९]+|[IVXLCDM]+)[\s:—–\-]*)?(?:[:—–\-]\s*)?([^\n#]*)$/iu;
 
 /**
  * Fallback regex for numbered chapters or sections:
  *   # 1. Introduction
+ *   # I. Introduction
  *   # १. भूमिका
  */
-const NUMBERED_HEADING_REGEX = /^(?:#{1,3}\s+)([0-9०-९]+)[\.\-–—\s]+(.+)$/u;
+const NUMBERED_HEADING_REGEX = /^(?:#{1,3}\s+)([0-9०-९]+|[IVXLCDM]+)[\.\-–—\s]+(.+)$/u;
 
 const MAX_COURSE_TEXT_BYTES = 15 * 1024 * 1024; // 15MB
 const MAX_REGEX_LINE_LENGTH = 10000;
 const MAX_LESSONS_PER_BOOK = 500;
+
+/**
+ * Converts Roman numerals (I, II, III, IV, V, ... up to at least L=50) to integers.
+ */
+export function parseRomanNumeral(str: string): number {
+  const romanMap: Record<string, number> = {
+    I: 1,
+    V: 5,
+    X: 10,
+    L: 50,
+    C: 100,
+    D: 500,
+    M: 1000
+  };
+  const upper = str.toUpperCase().trim();
+  let total = 0;
+  for (let i = 0; i < upper.length; i++) {
+    const current = romanMap[upper[i]] || 0;
+    const next = romanMap[upper[i + 1]] || 0;
+    if (current < next) {
+      total -= current;
+    } else {
+      total += current;
+    }
+  }
+  return total;
+}
 
 /**
  * Normalizes both Arabic (0-9) and Devanagari (०-९) digits into standard JavaScript integers.
@@ -54,7 +82,7 @@ function parseFlexibleNumber(str: string): number {
 function extractInlineSectionTag(lines: string[]): string | undefined {
   for (let i = 0; i < Math.min(lines.length, 12); i++) {
     const l = lines[i].trim();
-    const match = l.match(/^(?:>\s*|#{1,3}\s*|\*{1,2})?(?:Section|Part|Category|खण्ड|भाग)[:\s*]+([^\*#\n\r]+?)(?:\*{1,2})?$/iu);
+    const match = l.match(/^(?:>\s*|#{1,3}\s*|\*{1,2})?(?:Section|Part|Category|खण्ड|भाग)\s*[:—–\-]+\s*([^\*#\n\r]+?)(?:\*{1,2})?$/iu);
     if (match && match[1]?.trim()) {
       return match[1].trim().replace(/^[:—–\-|\.\s]+/, '');
     }
@@ -123,16 +151,29 @@ export function parseCourseMarkdown(fullText: string): Lesson[] {
     // Check for standalone Part/Section headers outside code fences
     if (!inCodeFence) {
       const sectionMatch = trimmed.match(SECTION_HEADING_REGEX);
-      if (sectionMatch && sectionMatch[1]?.trim()) {
-        activeSectionContext = sectionMatch[1].trim().replace(/\s*#+$/, '');
-        continue;
+      if (sectionMatch) {
+        const prefix = sectionMatch[1]?.trim() || '';
+        const numPart = sectionMatch[2]?.trim() || '';
+        const subtitle = sectionMatch[3]?.trim().replace(/\s*#+$/, '') || '';
+        const derivedSection = subtitle || (numPart ? `${prefix} ${numPart}` : prefix);
+
+        if (derivedSection) {
+          commitCurrent();
+          currentNumber = null;
+          currentTitle = '';
+          currentLines = [];
+          currentExplicitSection = undefined;
+          activeSectionContext = derivedSection;
+          continue;
+        }
       }
     }
 
     // Only look for lesson headers OUTSIDE of code fences
     const match = !inCodeFence ? trimmed.match(LESSON_HEADING_REGEX) : null;
     if (match) {
-      const num = parseFlexibleNumber(match[1]);
+      const isRoman = /^[IVXLCDM]+$/i.test(match[1].trim());
+      const num = isRoman ? parseRomanNumeral(match[1]) : parseFlexibleNumber(match[1]);
       let title = match[2].trim();
 
       // Strip trailing markdown header markers or bold markers
@@ -173,7 +214,8 @@ export function parseCourseMarkdown(fullText: string): Lesson[] {
 
       const match = !inCodeFence ? trimmed.match(NUMBERED_HEADING_REGEX) : null;
       if (match) {
-        const num = parseFlexibleNumber(match[1]);
+        const isRoman = /^[IVXLCDM]+$/i.test(match[1].trim());
+        const num = isRoman ? parseRomanNumeral(match[1]) : parseFlexibleNumber(match[1]);
         const title = match[2].trim().replace(/\s+#+$/, '');
         commitCurrent();
         currentNumber = num;
@@ -235,14 +277,23 @@ export function parseCourseMarkdown(fullText: string): Lesson[] {
   // Smart multi-part merge: if the same lesson number appears multiple times (e.g. continuations),
   // merge the markdown rather than discarding it!
   const lessonMap = new Map<number, Lesson>();
+  let maxLessonNumber = lessons.reduce((max, l) => Math.max(max, l.number), 0);
+
   for (const l of lessons) {
     if (!lessonMap.has(l.number)) {
       lessonMap.set(l.number, l);
     } else {
       const existing = lessonMap.get(l.number)!;
-      existing.markdown = `${existing.markdown}\n\n---\n\n### Continuation: ${l.title}\n\n${l.markdown}`.trim();
-      if (l.title && !existing.title.toLowerCase().includes(l.title.toLowerCase()) && l.title.toLowerCase() !== existing.title.toLowerCase()) {
-        existing.title = `${existing.title} / ${l.title}`;
+      if (existing.section !== l.section) {
+        maxLessonNumber = Math.max(maxLessonNumber, ...lessonMap.keys()) + 1;
+        l.number = maxLessonNumber;
+        l.id = `lesson-${maxLessonNumber}`;
+        lessonMap.set(l.number, l);
+      } else {
+        existing.markdown = `${existing.markdown}\n\n---\n\n### Continuation: ${l.title}\n\n${l.markdown}`.trim();
+        if (l.title && !existing.title.toLowerCase().includes(l.title.toLowerCase()) && l.title.toLowerCase() !== existing.title.toLowerCase()) {
+          existing.title = `${existing.title} / ${l.title}`;
+        }
       }
     }
   }

@@ -32,6 +32,10 @@ function openDatabase(): Promise<IDBDatabase> {
 
     const request = window.indexedDB.open(DB_NAME, DB_VERSION);
 
+    request.onblocked = () => {
+      console.warn('IndexedDB database upgrade was blocked by another open tab or window.');
+    };
+
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains(STORE_MANIFEST)) {
@@ -47,6 +51,12 @@ function openDatabase(): Promise<IDBDatabase> {
 
     request.onsuccess = () => {
       cachedDb = request.result;
+      cachedDb.onversionchange = () => {
+        // Close database connection if another tab upgrades schema
+        cachedDb?.close();
+        cachedDb = null;
+        dbInitPromise = null;
+      };
       cachedDb.onclose = () => {
         cachedDb = null;
         dbInitPromise = null;
@@ -98,19 +108,76 @@ export function extractMetadata(book: Book): BookMetadata {
 }
 
 /**
+ * Merges freshly-loaded course-data lessons with user's saved state
+ * (completed, bookmarked flags, scroll positions, media progress) so that
+ * refreshing the page or restarting the app never wipes user progress.
+ */
+function mergeCourseWithSavedState(
+  freshBook: Book,
+  savedContent: { lessons?: any[]; scrollPositions?: Record<string, number>; mediaProgress?: Record<string, number> } | null
+): Book {
+  if (!savedContent || !savedContent.lessons || savedContent.lessons.length === 0) {
+    return freshBook;
+  }
+
+  // Build a lookup of saved lesson state and content by id
+  const savedLessonMap = new Map<string, { completed?: boolean; bookmarked?: boolean; markdown?: string }>();
+  for (const sl of savedContent.lessons) {
+    if (sl && sl.id) {
+      savedLessonMap.set(sl.id, {
+        completed: sl.completed,
+        bookmarked: sl.bookmarked,
+        markdown: typeof sl.markdown === 'string' ? sl.markdown : undefined
+      });
+    }
+  }
+
+  // Apply saved state onto fresh lessons
+  const mergedLessons = freshBook.lessons.map(lesson => {
+    const saved = savedLessonMap.get(lesson.id);
+    if (saved) {
+      // If fresh lesson markdown is empty or an error placeholder, preserve cached offline markdown
+      const hasFailedMarkdown = !lesson.markdown || lesson.markdown.includes('Content could not be loaded.');
+      const preservedMarkdown = (hasFailedMarkdown && saved.markdown) ? saved.markdown : lesson.markdown;
+
+      return {
+        ...lesson,
+        markdown: preservedMarkdown,
+        completed: saved.completed || false,
+        bookmarked: saved.bookmarked || false
+      };
+    }
+    return lesson;
+  });
+
+  return {
+    ...freshBook,
+    lessons: mergedLessons,
+    completedLessons: mergedLessons.filter(l => l.completed).length,
+    scrollPositions: savedContent.scrollPositions || freshBook.scrollPositions || {},
+    mediaProgress: savedContent.mediaProgress || freshBook.mediaProgress || {}
+  };
+}
+
+/**
  * Load lightweight library manifest for instant Bookshelf rendering.
  * Only the single real course book from course-data is loaded.
+ * User progress (completed, bookmarked, scroll, media) is always preserved.
  */
 export async function loadLibraryManifest(): Promise<BookMetadata[]> {
   try {
     const db = await openDatabase();
-    const tx = db.transaction(STORE_MANIFEST, 'readonly');
-    const store = tx.objectStore(STORE_MANIFEST);
-    const request = store.getAll();
+    const tx = db.transaction([STORE_MANIFEST, STORE_BOOK_CONTENTS], 'readonly');
+    const manifestStore = tx.objectStore(STORE_MANIFEST);
+    const contentStore = tx.objectStore(STORE_BOOK_CONTENTS);
+    const manifestReq = manifestStore.getAll();
+    // Also fetch saved content for the bundled course book to preserve user state
+    const savedCourseReq = contentStore.get('java-software-design');
 
     return new Promise((resolve) => {
-      request.onsuccess = async () => {
-        let manifest: BookMetadata[] = request.result || [];
+      tx.oncomplete = async () => {
+        let manifest: BookMetadata[] = manifestReq.result || [];
+        const savedCourseContent = savedCourseReq.result || null;
 
         // Remove any unwanted dummy books
         const dummyIds = new Set(['book-system-design', 'book-clean-code', 'book-concurrency', 'book-design-patterns']);
@@ -127,15 +194,18 @@ export async function loadLibraryManifest(): Promise<BookMetadata[]> {
           manifest = filtered;
         }
 
-        // Always ensure the real course-data book ('java-software-design') is loaded from course-data/course.json
+        // Load fresh course structure from course-data, then merge with saved user state
         try {
           const courseBook = await loadCourseAsBook('/course-data');
           if (courseBook) {
-            await saveBookToStorage(courseBook);
-            const meta = extractMetadata(courseBook);
-            const existingIdx = manifest.findIndex(b => b.id === courseBook.id);
+            const merged = mergeCourseWithSavedState(courseBook, savedCourseContent);
+            await saveBookToStorage(merged);
+            const meta = extractMetadata(merged);
+            const existingIdx = manifest.findIndex(b => b.id === merged.id);
             if (existingIdx >= 0) {
-              manifest[existingIdx] = { ...manifest[existingIdx], ...meta };
+              // Preserve lastReadLessonId from existing manifest entry
+              const existingLastRead = manifest[existingIdx].lastReadLessonId;
+              manifest[existingIdx] = { ...meta, lastReadLessonId: existingLastRead || meta.lastReadLessonId };
             } else {
               manifest.unshift(meta);
             }
@@ -149,7 +219,7 @@ export async function loadLibraryManifest(): Promise<BookMetadata[]> {
 
         resolve(manifest);
       };
-      request.onerror = () => resolve(fallbackLoadManifestFromLocalStorage());
+      tx.onerror = () => resolve(fallbackLoadManifestFromLocalStorage());
     });
   } catch (err) {
     console.warn('IndexedDB unavailable, falling back to course-data direct load', err);
@@ -180,8 +250,14 @@ export async function loadBookContent(bookId: string): Promise<Book | null> {
           try {
             const loaded = await loadCourseAsBook(meta?.courseDataPath || '/course-data');
             if (loaded) {
-              await saveBookToStorage(loaded);
-              resolve(loaded);
+              // Merge fresh course structure with saved user state to preserve progress
+              const merged = mergeCourseWithSavedState(loaded, content);
+              // Preserve lastReadLessonId from meta
+              if (meta?.lastReadLessonId) {
+                merged.lastReadLessonId = meta.lastReadLessonId;
+              }
+              await saveBookToStorage(merged);
+              resolve(merged);
               return;
             }
           } catch (e) {
@@ -255,6 +331,17 @@ export async function saveBookToStorage(book: Book): Promise<boolean> {
  * Remove a book from storage
  */
 export async function deleteBookFromStorage(bookId: string): Promise<boolean> {
+  // Also clean up any localStorage fallback entries for this book
+  try {
+    localStorage.removeItem(`library_book_${bookId}`);
+    const legacyManifestStr = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacyManifestStr) {
+      const legacyManifest: any[] = JSON.parse(legacyManifestStr);
+      const filtered = legacyManifest.filter((b: any) => b.id !== bookId);
+      localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(filtered));
+    }
+  } catch {}
+
   try {
     const db = await openDatabase();
     const tx = db.transaction([STORE_MANIFEST, STORE_BOOK_CONTENTS], 'readwrite');

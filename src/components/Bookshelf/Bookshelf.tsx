@@ -247,14 +247,19 @@ export const Bookshelf: React.FC<BookshelfProps> = ({
               lessonCount > 0 ? Math.round((completedLessons / lessonCount) * 100) : 0;
 
             return (
-              <div
+              <article
                 key={book.id}
                 className={styles.bookCard}
-                onClick={() => onSelectBook(book.id)}
-                role="button"
+                onClick={e => {
+                  // Only open book if click did not originate inside action buttons
+                  if ((e.target as HTMLElement).closest('button')) return;
+                  onSelectBook(book.id);
+                }}
                 tabIndex={0}
                 onKeyDown={e => {
+                  if ((e.target as HTMLElement).closest('button')) return;
                   if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
                     onSelectBook(book.id);
                   }
                 }}
@@ -389,7 +394,7 @@ export const Bookshelf: React.FC<BookshelfProps> = ({
                     </div>
                   </div>
                 </div>
-              </div>
+              </article>
             );
           })}
 

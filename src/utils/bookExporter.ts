@@ -96,8 +96,7 @@ export function generateBookJson(book: Book): string {
  */
 export function getSafeFilename(title: string, extension: 'md' | 'json'): string {
   const clean = title
-    .toLowerCase()
-    .replace(/[^a-z0-9\u0900-\u097F_-]+/g, '_')
+    .replace(/[^\p{L}\p{N}_-]+/gu, '_')
     .replace(/^_+|_+$/g, '')
     .slice(0, 80);
   return `${clean || 'book_export'}.${extension}`;

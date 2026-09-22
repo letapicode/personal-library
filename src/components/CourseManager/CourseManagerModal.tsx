@@ -18,7 +18,7 @@ export const CourseManagerModal: React.FC<Props> = ({
   onExportMarkdown
 }) => {
   const [tab, setTab] = useState<'url' | 'paste' | 'file'>('url');
-  const [urlInput, setUrlInput] = useState('https://chatgpt.com/share/6aadb772-bc54-83ea-a66e-4a38aa17b59a');
+  const [urlInput, setUrlInput] = useState('');
   const [assistantOnly, setAssistantOnly] = useState(true);
   const [rawText, setRawText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
