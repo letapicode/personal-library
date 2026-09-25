@@ -601,6 +601,39 @@
   background-size: auto, var(--paper-grain-size);
 }
 
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .bookshelfContainer {
+  background-image: var(--real-paper-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .topNavigation {
+  background-image: var(--real-paper-panel-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .bookCard,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .spotlightHero,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .ghostAddCard {
+  background-color: rgba(245, 247, 252, 0.42);
+  box-shadow: 0 3px 12px rgba(38, 48, 73, 0.08);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .bookFooter {
+  background-color: transparent;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .searchBox,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .cmdKBadge,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .tagChip,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .shelfMeta,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .spotlightChapters {
+  background-color: rgba(231, 236, 247, 0.3);
+}
+
 /* ─── Responsive: Spotlight stacks on small screens ─── */
 @media (max-width: 720px) {
   .spotlightHero {

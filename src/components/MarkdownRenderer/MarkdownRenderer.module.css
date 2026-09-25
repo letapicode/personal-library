@@ -157,6 +157,33 @@
   background-size: auto, var(--paper-grain-size);
 }
 
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .h1,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .h2,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .h3 {
+  font-family: var(--reading-font);
+  font-weight: 680;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .blockquote {
+  background: rgba(220, 225, 242, 0.24);
+  border-left-color: var(--blockquote-bar);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .tableWrapper {
+  background-color: rgba(235, 239, 248, 0.16);
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .tableHeaderCell {
+  background-color: rgba(218, 226, 242, 0.26);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .inlineCode {
+  background-color: rgba(223, 229, 243, 0.32);
+  color: var(--accent-primary);
+}
+
 .tableCell {
   padding: 12px 18px;
   color: var(--primary-text);

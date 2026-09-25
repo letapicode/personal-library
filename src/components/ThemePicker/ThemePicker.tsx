@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { BookOpen, Moon, Sun } from 'lucide-react';
+import { BookOpen, FileImage, Moon, ScrollText, Sun } from 'lucide-react';
 import type { ReaderTheme } from '../../types/course';
+import { READER_THEMES } from '../../utils/readerThemes';
 import styles from './ThemePicker.module.css';
 
-const choices: { value: ReaderTheme; label: string; icon: typeof Moon }[] = [
-  { value: 'dark', label: 'Dark', icon: Moon },
-  { value: 'light', label: 'Light', icon: Sun },
-  { value: 'paper', label: 'Paper', icon: BookOpen }
-];
+const icons: Record<ReaderTheme, typeof Moon> = {
+  dark: Moon,
+  light: Sun,
+  paper: BookOpen,
+  'real-paper-generated': ScrollText,
+  'real-paper-image': FileImage
+};
 
 interface Props {
   theme: ReaderTheme;
@@ -18,8 +21,8 @@ interface Props {
 export function ThemePicker({ theme, onChange, buttonClassName = '' }: Props) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const current = choices.find(choice => choice.value === theme) || choices[0];
-  const CurrentIcon = current.icon;
+  const current = READER_THEMES.find(choice => choice.value === theme) || READER_THEMES[0];
+  const CurrentIcon = icons[current.value];
 
   useEffect(() => {
     if (!open) return;
@@ -53,8 +56,8 @@ export function ThemePicker({ theme, onChange, buttonClassName = '' }: Props) {
       {open && (
         <div className={styles.menu} role="group" aria-label="Appearance">
           <div className={styles.menuTitle}>Appearance</div>
-          {choices.map(choice => {
-            const Icon = choice.icon;
+          {READER_THEMES.map(choice => {
+            const Icon = icons[choice.value];
             return (
               <button
                 type="button"

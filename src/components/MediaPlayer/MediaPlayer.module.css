@@ -135,3 +135,15 @@
 [data-theme='paper'] .mediaCaption {
   background-color: transparent;
 }
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .mediaContainer,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .speedSelector {
+  background-image: var(--real-paper-inset-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .mediaCaption {
+  background-color: transparent;
+}

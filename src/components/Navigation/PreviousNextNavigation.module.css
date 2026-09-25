@@ -60,3 +60,8 @@
   border-color: rgba(80, 70, 54, 0.22);
   border-radius: 3px;
 }
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .navBtn {
+  background-color: rgba(235, 239, 248, 0.2);
+  box-shadow: none;
+}

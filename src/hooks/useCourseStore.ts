@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Book, BookMetadata, Lesson, ReaderTheme, UserPreferences } from '../types/course';
+import { isReaderTheme } from '../utils/readerThemes';
 import {
   loadLibraryManifest,
   loadBookContent,
@@ -34,7 +35,7 @@ export function useCourseStore() {
         setManifest(loadedManifest);
 
         if (savedPrefs) {
-          setTheme(['dark', 'light', 'paper'].includes(savedPrefs.theme) ? savedPrefs.theme : 'dark');
+          setTheme(isReaderTheme(savedPrefs.theme) ? savedPrefs.theme : 'dark');
           setSidebarCollapsed(savedPrefs.sidebarCollapsed || false);
           if (savedPrefs.mediaProgress) {
             setMediaProgress(savedPrefs.mediaProgress);

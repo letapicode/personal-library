@@ -97,7 +97,7 @@ export interface UserPreferences {
   theme: ReaderTheme;
 }
 
-export type ReaderTheme = 'dark' | 'light' | 'paper';
+export type ReaderTheme = 'dark' | 'light' | 'paper' | 'real-paper-generated' | 'real-paper-image';
 
 export interface SharedConversationImportResult {
   title?: string;

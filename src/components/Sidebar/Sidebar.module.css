@@ -284,3 +284,20 @@
   background-image: var(--paper-inset-wash), var(--paper-grain);
   background-size: auto, var(--paper-grain-size);
 }
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .sidebar {
+  background-image: var(--real-paper-panel-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .sidebarFooter {
+  background-color: transparent;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .searchInput,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .libraryBackBtn,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .cmdKBadge {
+  background-color: rgba(235, 239, 248, 0.28);
+}

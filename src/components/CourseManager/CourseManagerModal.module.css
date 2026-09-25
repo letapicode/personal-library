@@ -190,3 +190,20 @@
   background-image: var(--paper-inset-wash), var(--paper-grain);
   background-size: auto, var(--paper-grain-size);
 }
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .modalBox {
+  background-image: var(--real-paper-panel-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .modalOverlay {
+  background-color: rgba(25, 33, 52, 0.42);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .inputField,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .textareaField,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .previewSection {
+  background-color: rgba(235, 239, 248, 0.35);
+}

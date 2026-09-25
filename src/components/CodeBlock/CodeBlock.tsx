@@ -22,7 +22,7 @@ function highlightCode(src: string, lang: string): string {
   let getTag: ((m: RegExpExecArray) => string) | null = null;
 
   if (lang === 'java') {
-    tokenRegex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(@[A-Za-z_]\w*)|(\b(?:public|private|protected|class|interface|implements|extends|void|return|new|if|else|for|while|throw|throws|static|final|abstract|boolean|int|double|float|long|byte|short|char|enum|default|switch|case|break)\b)|(\b(?:String|Override|System|List|Map|Set|Worker|HumanWorker|RobotWorker|PaymentStrategy|CreditCardStrategy|ShoppingCart|SystemMetric|Optional|ArrayList|HashMap|HashSet)\b)|(\b[a-zA-Z_]\w*(?=\s*\())/g;
+    tokenRegex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(@[A-Za-z_]\w*)|(\b(?:public|private|protected|class|interface|implements|extends|void|return|new|if|else|for|while|throw|throws|static|final|abstract|boolean|int|double|float|long|byte|short|char|enum|default|switch|case|break)\b)|(\b(?:String|Override|System|List|Map|Set|Worker|HumanWorker|RobotWorker|PaymentStrategy|CreditCardStrategy|ShoppingCart|SystemMetric|Optional|ArrayList|HashMap|HashSet)\b)|(\b[a-zA-Z_]\w*(?=\s*\())|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/g;
     getTag = (m) => {
       if (m[1]) return 'syn-com';
       if (m[2]) return 'syn-str';
@@ -30,35 +30,43 @@ function highlightCode(src: string, lang: string): string {
       if (m[4]) return 'syn-kw';
       if (m[5]) return 'syn-type';
       if (m[6]) return 'syn-method';
+      if (m[7]) return 'syn-literal-number';
+      if (m[8]) return 'syn-paper-ident';
       return '';
     };
   } else if (['ts', 'tsx', 'js', 'jsx', 'typescript', 'javascript'].includes(lang)) {
-    tokenRegex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b(?:const|let|var|function|return|if|else|for|while|switch|case|break|class|interface|type|extends|implements|export|import|from|async|await|try|catch|finally|throw|new|this|typeof|instanceof)\b)|(\b(?:Promise|Array|Record|Partial|Required|Readonly|Map|Set|Console|document|window|React|FC)\b)|(\b[a-zA-Z_]\w*(?=\s*\())/g;
+    tokenRegex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b(?:const|let|var|function|return|if|else|for|while|switch|case|break|class|interface|type|extends|implements|export|import|from|async|await|try|catch|finally|throw|new|this|typeof|instanceof)\b)|(\b(?:Promise|Array|Record|Partial|Required|Readonly|Map|Set|Console|document|window|React|FC)\b)|(\b[a-zA-Z_]\w*(?=\s*\())|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/g;
     getTag = (m) => {
       if (m[1]) return 'syn-com';
       if (m[2]) return 'syn-str';
       if (m[3]) return 'syn-kw';
       if (m[4]) return 'syn-type';
       if (m[5]) return 'syn-method';
+      if (m[6]) return 'syn-literal-number';
+      if (m[7]) return 'syn-paper-ident';
       return '';
     };
   } else if (['py', 'python'].includes(lang)) {
-    tokenRegex = /(#[^\n]*)|("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b(?:def|class|return|if|elif|else|for|while|try|except|finally|raise|import|from|as|with|lambda|yield|async|await|pass|None|True|False|self|in|is|and|or|not)\b)|(\b(?:str|int|float|bool|list|dict|set|tuple|Optional|Union|Any|List|Dict)\b)|(\b[a-zA-Z_]\w*(?=\s*\())/g;
+    tokenRegex = /(#[^\n]*)|("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b(?:def|class|return|if|elif|else|for|while|try|except|finally|raise|import|from|as|with|lambda|yield|async|await|pass|None|True|False|self|in|is|and|or|not)\b)|(\b(?:str|int|float|bool|list|dict|set|tuple|Optional|Union|Any|List|Dict)\b)|(\b[a-zA-Z_]\w*(?=\s*\())|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/g;
     getTag = (m) => {
       if (m[1]) return 'syn-com';
       if (m[2]) return 'syn-str';
       if (m[3]) return 'syn-kw';
       if (m[4]) return 'syn-type';
       if (m[5]) return 'syn-method';
+      if (m[6]) return 'syn-literal-number';
+      if (m[7]) return 'syn-paper-ident';
       return '';
     };
   } else if (['sql', 'postgresql', 'mysql', 'sqlite'].includes(lang)) {
-    tokenRegex = /(--[^\n]*|\/\*[\s\S]*?\*\/)|('(?:\\.|[^'\\])*')|(\b(?:SELECT|FROM|WHERE|INSERT|INTO|UPDATE|DELETE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|GROUP|BY|ORDER|HAVING|LIMIT|OFFSET|CREATE|TABLE|DROP|ALTER|ADD|CONSTRAINT|PRIMARY|KEY|FOREIGN|REFERENCES|NOT|NULL|DEFAULT|AND|OR|AS|IN|EXISTS|BETWEEN|CASE|WHEN|THEN|ELSE|END)\b)|(\b(?:VARCHAR|TEXT|INTEGER|INT|BIGINT|BOOLEAN|TIMESTAMP|DATE|FLOAT|DECIMAL|SERIAL)\b)/gi;
+    tokenRegex = /(--[^\n]*|\/\*[\s\S]*?\*\/)|('(?:\\.|[^'\\])*')|(\b(?:SELECT|FROM|WHERE|INSERT|INTO|UPDATE|DELETE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|GROUP|BY|ORDER|HAVING|LIMIT|OFFSET|CREATE|TABLE|DROP|ALTER|ADD|CONSTRAINT|PRIMARY|KEY|FOREIGN|REFERENCES|NOT|NULL|DEFAULT|AND|OR|AS|IN|EXISTS|BETWEEN|CASE|WHEN|THEN|ELSE|END)\b)|(\b(?:VARCHAR|TEXT|INTEGER|INT|BIGINT|BOOLEAN|TIMESTAMP|DATE|FLOAT|DECIMAL|SERIAL)\b)|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/gi;
     getTag = (m) => {
       if (m[1]) return 'syn-com';
       if (m[2]) return 'syn-str';
       if (m[3]) return 'syn-kw';
       if (m[4]) return 'syn-type';
+      if (m[5]) return 'syn-literal-number';
+      if (m[6]) return 'syn-paper-ident';
       return '';
     };
   } else if (lang === 'json') {
@@ -67,7 +75,7 @@ function highlightCode(src: string, lang: string): string {
       if (m[1]) return 'syn-kw';
       if (m[2]) return 'syn-str';
       if (m[3]) return 'syn-ann';
-      if (m[4]) return 'syn-type';
+      if (m[4]) return 'syn-json-number';
       return '';
     };
   }
@@ -165,8 +173,8 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, code }) => {
         >
           {copied ? (
             <>
-              <Check size={14} color="#60d394" />
-              <span style={{ color: '#60d394' }}>Copied</span>
+              <Check size={14} color="var(--code-copy-success, #60d394)" />
+              <span style={{ color: 'var(--code-copy-success, #60d394)' }}>Copied</span>
             </>
           ) : (
             <>

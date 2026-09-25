@@ -285,6 +285,37 @@
   margin-left: 34px;
 }
 
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .readerShell,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .readerContainer {
+  background-image: var(--real-paper-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .topBar {
+  background-image: var(--real-paper-panel-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom-color: var(--sidebar-border);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .readerColumn {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .lessonMainTitle {
+  font-family: var(--reading-font);
+  font-weight: 680;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .readingProgressFill {
+  background: var(--accent-primary);
+}
+
 @media (max-width: 1340px) {
   [data-theme='paper'] .rightRail {
     display: none;
@@ -292,6 +323,10 @@
 }
 
 @media (max-width: 760px) {
+  :is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .readerLayout {
+    padding: 24px 20px 64px;
+  }
+
   [data-theme='paper'] .readerLayout {
     padding: 0 0 64px;
   }

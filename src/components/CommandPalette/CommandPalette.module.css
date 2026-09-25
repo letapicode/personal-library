@@ -45,6 +45,21 @@
   background-color: transparent;
 }
 
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .paletteModal {
+  background-image: var(--real-paper-panel-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .paletteOverlay {
+  background-color: rgba(25, 33, 52, 0.38);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .footer {
+  background-color: transparent;
+}
+
 @keyframes popScale {
   from {
     transform: scale(0.97) translateY(-8px);

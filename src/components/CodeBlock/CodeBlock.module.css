@@ -34,6 +34,31 @@
   border-bottom-color: rgba(80, 70, 54, 0.16);
 }
 
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .codeCard {
+  background-color: rgba(235, 239, 248, 0.2);
+  border-color: rgba(39, 50, 77, 0.2);
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .codeHeader {
+  background-color: rgba(222, 229, 242, 0.22);
+  border-bottom-color: rgba(39, 50, 77, 0.16);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .pre {
+  color: var(--syn-punctuation);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) :global(.syn-literal-number),
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) :global(.syn-json-number) {
+  color: var(--real-paper-number);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) :global(.syn-paper-ident) {
+  color: var(--syn-ident);
+}
+
 .langLabelGroup {
   display: flex;
   align-items: center;
@@ -97,3 +122,6 @@
 :global(.syn-com) { color: var(--syn-comment); font-style: italic; }
 :global(.syn-punct) { color: var(--syn-punctuation); }
 :global(.syn-ident) { color: var(--syn-ident); }
+:global(.syn-literal-number) { color: inherit; }
+:global(.syn-json-number) { color: var(--syn-type); }
+:global(.syn-paper-ident) { color: inherit; }

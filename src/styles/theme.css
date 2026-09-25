@@ -142,6 +142,61 @@
   --syn-ident: #292824;
 }
 
+/* Two opt-in, full-surface paper themes. Their texture sources are intentionally
+   separate; all other ink and surface rules are shared. No old theme is altered. */
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) {
+  color-scheme: light;
+  --reader-bg: #eef1f7;
+  --sidebar-bg: #e9edf5;
+  --card-bg: #f2f4f9;
+  --code-bg: #e8ecf5;
+  --modal-bg: #f2f4f9;
+  --real-paper-wash: linear-gradient(rgba(248, 250, 254, 0.08), rgba(248, 250, 254, 0.08));
+  --real-paper-panel-wash: linear-gradient(rgba(238, 242, 250, 0.27), rgba(238, 242, 250, 0.27));
+  --real-paper-inset-wash: linear-gradient(rgba(225, 231, 242, 0.3), rgba(225, 231, 242, 0.3));
+  --real-paper-surface: var(--real-paper-wash), var(--real-paper-texture);
+  --real-paper-panel-surface: var(--real-paper-panel-wash), var(--real-paper-texture);
+  --real-paper-inset-surface: var(--real-paper-inset-wash), var(--real-paper-texture);
+
+  --sidebar-border: rgba(33, 45, 69, 0.23);
+  --subtle-border: rgba(33, 45, 69, 0.17);
+  --sidebar-hover: rgba(64, 53, 145, 0.09);
+  --sidebar-active: rgba(103, 54, 160, 0.15);
+  --blockquote-bar: #6340a5;
+
+  --primary-text: #182338;
+  --secondary-text: #3c485b;
+  --muted-text: #39475b;
+  --accent-primary: #6c205e;
+  --accent-secondary: #4b2a9d;
+  --accent-pink: #6c205e;
+  --accent-lavender: #4b2a9d;
+  --accent-emerald: #0b553a;
+  --accent-amber: #773607;
+  --selection-bg: rgba(116, 75, 187, 0.22);
+
+  --syn-keyword: #85115f;
+  --syn-type: #4b23a3;
+  --syn-method: #303096;
+  --syn-string: #0b553a;
+  --syn-number: #773607;
+  --syn-annotation: #6c205e;
+  --syn-comment: #3b4a5f;
+  --syn-punctuation: #1b263c;
+  --syn-ident: #303096;
+  --real-paper-number: #773607;
+  --code-copy-success: #0b553a;
+}
+
+[data-theme='real-paper-generated'] {
+  --real-paper-texture: url('../assets/real-paper-generated.webp');
+}
+
+[data-theme='real-paper-image'] {
+  --reader-bg: #d5d9e2;
+  --real-paper-texture: url('../assets/real-paper-image.webp');
+}
+
 /* User-controlled reading font styles */
 [data-reading-font='serif'] {
   --reading-font: var(--font-serif);

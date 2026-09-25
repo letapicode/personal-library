@@ -17,7 +17,7 @@ Designed for complete offline independence — clone the repository, run it loca
 - **Interactive Reading Experience**:
   - Automatic headings detection with an interactive **On This Page** Table of Contents.
   - Reader toolbar that remains available while scrolling, with the progress line directly below it.
-  - Custom font family (`Sans`, `Serif`), font sizing, reading width, and Dark, Light, or textured Paper themes. Paper also textures the reader's navigation, code panels, and other UI surfaces.
+  - Custom font family (`Sans`, `Serif`), font sizing, reading width, and five appearance choices: Dark, Light, Paper, Coded Paper, and Image Paper. The two new paper options place selectable text and syntax-highlighted code over a cool paper surface; Image Paper uses an optimized photograph.
   - Syntax highlighting with one-click code copying for Java, Python, TypeScript, Rust, Go, SQL, and more.
 - **Bookshelf Dashboard**:
   - **Spotlight Hero Card**: Seamlessly resume reading your active book with progress stats and quick chapter jump links.
@@ -57,6 +57,8 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 On this Windows checkout, `Win + R` → `Run Das Library` uses `run-library.cmd` in the project folder. It checks whether this checkout is already serving port 3000, starts it only when needed, and opens the browser after Vite is ready. Port 3000 is required; another application on that port produces an error rather than switching to 3001.
+
+The Real Paper texture assets are committed with the app, so the original download is not needed to run it. To regenerate them, install Pillow and NumPy and run `python scripts/prepare-real-paper-assets.py --reference "path/to/blank-paper.png"`. The generated variant is built independently of the supplied image.
 
 When a server is already running, the launcher opens a tab and its brief window closes; the server keeps running. When it starts a new server, the launcher window stays open. Press `Ctrl+C` in that window to stop it. Closing the browser tab does not stop the server. You can also run `stop-library.cmd` from this folder to stop this checkout's server on port 3000. The tab opens in whichever browser Windows has set as its default; choose Chrome in Windows Default apps if you want Chrome every time.
 

@@ -246,3 +246,24 @@
 [data-theme='paper'] .modalFooter {
   background-color: transparent;
 }
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .modalWindow,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .formatCard,
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .bookBanner {
+  background-image: var(--real-paper-panel-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .modalBackdrop {
+  background-color: rgba(25, 33, 52, 0.42);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .modalFooter {
+  background-color: transparent;
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .downloadBtn {
+  color: #ffffff;
+}

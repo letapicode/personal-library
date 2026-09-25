@@ -6,6 +6,8 @@ import {
   Sun,
   Moon,
   BookOpenText,
+  ScrollText,
+  FileImage,
   Library,
   Settings,
   Plus,
@@ -13,6 +15,7 @@ import {
   Download
 } from 'lucide-react';
 import type { Book, BookMetadata, Lesson, ReaderTheme } from '../../types/course';
+import { READER_THEMES } from '../../utils/readerThemes';
 import styles from './CommandPalette.module.css';
 
 interface CommandItem {
@@ -119,16 +122,18 @@ export const CommandPalette: React.FC<Props> = ({
 
     // 3. Quick Actions
     const actions: CommandItem[] = [
-      ...([
-        { value: 'dark' as const, label: 'Dark', icon: <Moon size={15} /> },
-        { value: 'light' as const, label: 'Light', icon: <Sun size={15} /> },
-        { value: 'paper' as const, label: 'Paper', icon: <BookOpenText size={15} /> }
-      ].map(option => ({
+      ...(READER_THEMES.map(option => ({
         id: `action-theme-${option.value}`,
         category: 'Actions' as const,
         title: `Switch to ${option.label} Theme`,
         subtitle: theme === option.value ? 'Current appearance' : 'Change reader appearance',
-        icon: option.icon,
+        icon: {
+          dark: <Moon size={15} />,
+          light: <Sun size={15} />,
+          paper: <BookOpenText size={15} />,
+          'real-paper-generated': <ScrollText size={15} />,
+          'real-paper-image': <FileImage size={15} />
+        }[option.value],
         onSelect: () => {
           onChangeTheme(option.value);
           onClose();

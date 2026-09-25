@@ -97,3 +97,19 @@
   background-image: var(--paper-grain);
   background-size: var(--paper-grain-size);
 }
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .popoverPanel {
+  background-image: var(--real-paper-panel-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 10px 24px rgba(38, 48, 73, 0.16);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .btnGroup {
+  background-color: rgba(223, 230, 244, 0.34);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .optionBtnActive {
+  background-color: rgba(247, 249, 253, 0.58);
+}

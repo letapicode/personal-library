@@ -15,7 +15,9 @@
   z-index: 200;
   top: calc(100% + 9px);
   right: 0;
-  width: 172px;
+  width: min(172px, calc(100vw - 20px));
+  max-height: min(70vh, 330px);
+  overflow-y: auto;
   padding: 7px;
   border: 1px solid var(--sidebar-border);
   border-radius: var(--radius-md);
@@ -67,4 +69,12 @@
   background-image: var(--paper-grain);
   background-size: var(--paper-grain-size);
   border-color: rgba(80, 70, 54, 0.24);
+}
+
+:is([data-theme='real-paper-generated'], [data-theme='real-paper-image']) .menu {
+  background-image: var(--real-paper-panel-surface);
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 10px 24px rgba(38, 48, 73, 0.16);
 }
