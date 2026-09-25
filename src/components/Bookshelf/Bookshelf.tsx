@@ -3,8 +3,6 @@ import {
   BookOpen,
   Plus,
   Search,
-  Moon,
-  Sun,
   Layers,
   ArrowRight,
   Trash2,
@@ -16,17 +14,18 @@ import {
   Download,
   X
 } from 'lucide-react';
-import type { Book, BookMetadata } from '../../types/course';
+import type { Book, BookMetadata, ReaderTheme } from '../../types/course';
+import { ThemePicker } from '../ThemePicker/ThemePicker';
 import styles from './Bookshelf.module.css';
 
 interface BookshelfProps {
   books: (Book | BookMetadata)[];
-  theme: 'dark' | 'light';
+  theme: ReaderTheme;
   onSelectBook: (bookId: string) => void;
   onOpenAddModal: () => void;
   onDeleteBook: (bookId: string) => void;
   onExportBook: (bookId: string) => void;
-  onToggleTheme: () => void;
+  onChangeTheme: (theme: ReaderTheme) => void;
   onOpenCommandPalette?: () => void;
 }
 
@@ -37,7 +36,7 @@ export const Bookshelf: React.FC<BookshelfProps> = ({
   onOpenAddModal,
   onDeleteBook,
   onExportBook,
-  onToggleTheme,
+  onChangeTheme,
   onOpenCommandPalette
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -135,13 +134,7 @@ export const Bookshelf: React.FC<BookshelfProps> = ({
             <span>Add Book</span>
           </button>
 
-          <button
-            className={styles.themeToggleBtn}
-            onClick={onToggleTheme}
-            aria-label="Toggle dark/light mode"
-          >
-            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-          </button>
+          <ThemePicker theme={theme} onChange={onChangeTheme} buttonClassName={styles.themeToggleBtn} />
         </div>
       </header>
 

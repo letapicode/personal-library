@@ -1,17 +1,25 @@
+.readerShell {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--reader-bg);
+}
+
 .readerContainer {
   flex: 1;
-  height: 100vh;
+  min-height: 0;
+  width: 100%;
   overflow-y: auto;
   background-color: var(--reader-bg);
   position: relative;
 }
 
-/* Pinned Reading Progress Bar */
+/* The progress line is a sibling of the sole lesson scroller. */
 .readingProgressBar {
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
+  flex: none;
   height: 3px;
   background-color: var(--sidebar-border, rgba(255, 255, 255, 0.07));
   z-index: 30;
@@ -40,14 +48,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  gap: 12px;
+  min-height: 62px;
+  padding: 10px 24px;
   position: relative;
+  z-index: 35;
+  flex: none;
+  background-color: var(--reader-bg);
+  border-bottom: 1px solid var(--subtle-border);
 }
 
 .topBarLeft {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .breadcrumbArea {
@@ -56,6 +71,7 @@
   gap: 6px;
   font-size: 13px;
   font-family: var(--font-sans);
+  min-width: 0;
 }
 
 .breadcrumbLink {
@@ -85,6 +101,9 @@
 .breadcrumbCurrent {
   color: var(--primary-text);
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toggleSidebarBtn {
@@ -114,6 +133,7 @@
   align-items: center;
   gap: 8px;
   position: relative;
+  flex: none;
 }
 
 .actionBtn {
@@ -207,6 +227,116 @@
 .rightRail {
   margin-left: 56px;
   flex-shrink: 0;
+}
+
+[data-theme='paper'] .readerLayout {
+  padding-top: 30px;
+}
+
+[data-theme='paper'] .readerShell,
+[data-theme='paper'] .readerContainer {
+  background-image: var(--paper-canvas-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+}
+
+[data-theme='paper'] .topBar {
+  background-image: var(--paper-panel-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+  border-bottom-color: rgba(80, 70, 54, 0.23);
+}
+
+[data-theme='paper'] .readerColumn {
+  box-sizing: border-box;
+  width: calc(var(--reading-measure) + 108px);
+  max-width: 100%;
+  padding: 44px 54px 86px;
+  border: 1px solid rgba(80, 70, 54, 0.22);
+  border-radius: 2px;
+  background-color: var(--paper-sheet-bg);
+  background-image: linear-gradient(90deg, rgba(73, 64, 48, 0.035), transparent 22px, transparent calc(100% - 22px), rgba(73, 64, 48, 0.03)), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+  box-shadow: 0 1px 2px rgba(65, 56, 44, 0.08), 0 16px 46px rgba(65, 56, 44, 0.16);
+}
+
+[data-theme='paper'] .lessonMainTitle {
+  font-family: var(--reading-font);
+  font-size: 35px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+[data-theme='paper'] .contentWrapper {
+  line-height: var(--reading-line-height);
+}
+
+[data-theme='paper'] .lessonHeader {
+  border-bottom-color: rgba(81, 70, 52, 0.2);
+}
+
+[data-theme='paper'] .readingProgressBar {
+  background-color: #c8c3b9;
+}
+
+[data-theme='paper'] .readingProgressFill {
+  background: var(--accent-primary);
+}
+
+[data-theme='paper'] .rightRail {
+  margin-left: 34px;
+}
+
+@media (max-width: 1340px) {
+  [data-theme='paper'] .rightRail {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  [data-theme='paper'] .readerLayout {
+    padding: 0 0 64px;
+  }
+
+  [data-theme='paper'] .readerColumn {
+    box-sizing: border-box;
+    padding: 30px 24px 64px;
+    border-left: 0;
+    border-right: 0;
+    box-shadow: none;
+  }
+
+  [data-theme='paper'] .lessonMainTitle {
+    font-size: 31px;
+  }
+}
+
+@media (max-width: 800px) {
+  .topBar {
+    flex-wrap: wrap;
+    padding: 8px 16px;
+  }
+
+  .topBarLeft {
+    flex: 1 1 100%;
+  }
+
+  .actionButtonGroup {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topBar {
+    padding: 8px 12px;
+  }
+
+  .actionBtn {
+    padding: 6px 8px;
+  }
+
+  .breadcrumbCurrent {
+    max-width: 11ch;
+  }
 }
 
 @media (max-width: 1240px) {

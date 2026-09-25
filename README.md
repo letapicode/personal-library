@@ -16,8 +16,8 @@ Designed for complete offline independence — clone the repository, run it loca
 - **Multilingual & Native Devanagari**: Full font stacks and resilient parser support for English, Hindi, Nepali, and Unicode numerals/scripts (`०-९`, `अध्याय`, `पाठ`).
 - **Interactive Reading Experience**:
   - Automatic headings detection with an interactive **On This Page** Table of Contents.
-  - Pinned hairline reading progress bar.
-  - Custom font family (`Sans`, `Serif`, `Monospace`), font sizing, line height, and dark/light themes.
+  - Reader toolbar that remains available while scrolling, with the progress line directly below it.
+  - Custom font family (`Sans`, `Serif`), font sizing, reading width, and Dark, Light, or textured Paper themes. Paper also textures the reader's navigation, code panels, and other UI surfaces.
   - Syntax highlighting with one-click code copying for Java, Python, TypeScript, Rust, Go, SQL, and more.
 - **Bookshelf Dashboard**:
   - **Spotlight Hero Card**: Seamlessly resume reading your active book with progress stats and quick chapter jump links.
@@ -31,19 +31,20 @@ Designed for complete offline independence — clone the repository, run it loca
 - **Keyboard Navigation**:
   - `⌘K` or `Ctrl+K`: Global Command Palette to search books, jump to chapters, toggle themes, or export.
   - `Alt + ←` / `Alt + →`: Jump between previous and next chapters instantly.
+  - The reader's **Full screen** button enters app-controlled fullscreen; press `Esc` to exit. Chrome's own `F11` fullscreen is controlled by Chrome (`F11` or hold `Esc` to exit).
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- [Node.js](https://nodejs.org/) (v20.19+ or v22.12+ for Vite 8)
 - `npm` or `bun`
 
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/personal-library.git
+git clone https://github.com/letapicode/personal-library.git
 cd personal-library
 
 # Install dependencies
@@ -54,6 +55,10 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+On this Windows checkout, `Win + R` → `Run Das Library` uses `run-library.cmd` in the project folder. It checks whether this checkout is already serving port 3000, starts it only when needed, and opens the browser after Vite is ready. Port 3000 is required; another application on that port produces an error rather than switching to 3001.
+
+When a server is already running, the launcher opens a tab and its brief window closes; the server keeps running. When it starts a new server, the launcher window stays open. Press `Ctrl+C` in that window to stop it. Closing the browser tab does not stop the server. You can also run `stop-library.cmd` from this folder to stop this checkout's server on port 3000. The tab opens in whichever browser Windows has set as its default; choose Chrome in Windows Default apps if you want Chrome every time.
 
 ---
 

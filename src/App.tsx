@@ -29,7 +29,7 @@ export const App: React.FC = () => {
     saveScrollPosition,
     saveMediaTime,
     toggleSidebar,
-    toggleTheme,
+    changeTheme,
     toggleBookmark,
     toggleComplete,
     updateActiveBookLessons,
@@ -133,7 +133,7 @@ export const App: React.FC = () => {
           onOpenAddModal={() => setIsAddBookModalOpen(true)}
           onDeleteBook={deleteBook}
           onExportBook={bookId => handleOpenExport(bookId)}
-          onToggleTheme={toggleTheme}
+          onChangeTheme={changeTheme}
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
         />
 
@@ -162,7 +162,7 @@ export const App: React.FC = () => {
           theme={theme}
           onSelectBook={selectBook}
           onSelectLesson={selectLesson}
-          onToggleTheme={toggleTheme}
+          onChangeTheme={changeTheme}
           onOpenManager={() => setIsManagerOpen(true)}
           onOpenAddBook={() => setIsAddBookModalOpen(true)}
           onExportBook={() => handleOpenExport(activeBook)}
@@ -194,7 +194,7 @@ export const App: React.FC = () => {
         onSelectLesson={selectLesson}
         onOpenManager={() => setIsManagerOpen(true)}
         onExportBook={() => handleOpenExport(activeBook)}
-        onToggleTheme={toggleTheme}
+        onChangeTheme={changeTheme}
         onToggleSidebar={toggleSidebar}
         onBackToBookshelf={() => selectBook(null)}
         onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
@@ -280,7 +280,7 @@ export const App: React.FC = () => {
         theme={theme}
         onSelectBook={selectBook}
         onSelectLesson={selectLesson}
-        onToggleTheme={toggleTheme}
+        onChangeTheme={changeTheme}
         onOpenManager={() => setIsManagerOpen(true)}
         onOpenAddBook={() => setIsAddBookModalOpen(true)}
         onExportBook={() => handleOpenExport(activeBook)}

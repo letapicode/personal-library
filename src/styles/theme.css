@@ -59,7 +59,7 @@
 }
 
 [data-theme='light'] {
-  /* Light Theme Surfaces: Editorial Warm Paper */
+  /* Light Theme Surfaces */
   --reader-bg: #faf8f5;
   --sidebar-bg: #f2efe9;
   --card-bg: #ffffff;
@@ -97,6 +97,49 @@
   --syn-comment: #6b6574;
   --syn-punctuation: #1e1c22;
   --syn-ident: #16141a;
+}
+
+/* A physical reading sheet against a darker desk-like surround. */
+[data-theme='paper'] {
+  color-scheme: light;
+  --paper-grain: url('../assets/paper-fine-texture.webp');
+  --paper-grain-size: 1536px 1536px;
+  --paper-canvas-wash: linear-gradient(rgba(78, 69, 53, 0.18), rgba(78, 69, 53, 0.18));
+  --paper-panel-wash: linear-gradient(rgba(108, 95, 73, 0.08), rgba(108, 95, 73, 0.08));
+  --paper-inset-wash: linear-gradient(rgba(100, 86, 63, 0.08), rgba(100, 86, 63, 0.08));
+  --reader-bg: #d5d2ca;
+  --sidebar-bg: #e8e4dc;
+  --card-bg: #f0ede5;
+  --code-bg: #e9e4da;
+  --modal-bg: #f5f1e9;
+  --paper-sheet-bg: #f4f2ec;
+
+  --sidebar-border: rgba(54, 47, 37, 0.16);
+  --subtle-border: rgba(54, 47, 37, 0.13);
+  --sidebar-hover: rgba(65, 51, 34, 0.07);
+  --sidebar-active: rgba(98, 73, 47, 0.11);
+  --blockquote-bar: #8d7965;
+
+  --primary-text: #25231f;
+  --secondary-text: #4b4740;
+  --muted-text: #676155;
+  --accent-primary: #765036;
+  --accent-secondary: #68735b;
+  --accent-pink: #765036;
+  --accent-lavender: #68735b;
+  --accent-emerald: #3e6d5b;
+  --accent-amber: #a1642d;
+  --selection-bg: rgba(164, 129, 83, 0.25);
+
+  --syn-keyword: #965037;
+  --syn-type: #624c86;
+  --syn-method: #365d7a;
+  --syn-string: #436c4c;
+  --syn-number: #8a5a32;
+  --syn-annotation: #80465c;
+  --syn-comment: #5f5b53;
+  --syn-punctuation: #393732;
+  --syn-ident: #292824;
 }
 
 /* User-controlled reading font styles */

@@ -266,3 +266,21 @@
   background: linear-gradient(90deg, var(--accent-pink), var(--accent-lavender));
   transition: width 0.2s ease;
 }
+
+[data-theme='paper'] .sidebar {
+  background-image: var(--paper-panel-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+  border-right-color: rgba(80, 70, 54, 0.25);
+  box-shadow: inset -3px 0 8px rgba(80, 70, 54, 0.045);
+}
+
+[data-theme='paper'] .sidebarFooter {
+  background-color: transparent;
+}
+
+[data-theme='paper'] .searchInput,
+[data-theme='paper'] .libraryBackBtn,
+[data-theme='paper'] .cmdKBadge {
+  background-image: var(--paper-inset-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+}

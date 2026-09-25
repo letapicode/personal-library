@@ -1,11 +1,12 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { Bookmark, CheckCircle2, PanelLeftOpen, BookOpen, ChevronRight, Clock, Type } from 'lucide-react';
+import { Bookmark, CheckCircle2, PanelLeftOpen, BookOpen, ChevronRight, Clock, Maximize2, Minimize2 } from 'lucide-react';
 import type { Lesson } from '../../types/course';
 import { MarkdownRenderer } from '../MarkdownRenderer/MarkdownRenderer';
 import { LessonTableOfContents } from '../LessonTableOfContents/LessonTableOfContents';
 import { PreviousNextNavigation } from '../Navigation/PreviousNextNavigation';
 import { MediaPlayer } from '../MediaPlayer/MediaPlayer';
 import { ReadingPreferences } from '../ReadingPreferences/ReadingPreferences';
+import { getLessonHeadings } from '../../utils/lessonHeadings';
 import styles from './LessonReader.module.css';
 
 interface Props {
@@ -47,6 +48,23 @@ export const LessonReader: React.FC<Props> = ({
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isReadingPrefsOpen, setIsReadingPrefsOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const syncFullscreen = () => setIsFullscreen(document.fullscreenElement !== null);
+    document.addEventListener('fullscreenchange', syncFullscreen);
+    syncFullscreen();
+    return () => document.removeEventListener('fullscreenchange', syncFullscreen);
+  }, []);
+
+  const toggleReadingFullscreen = async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch (error) {
+      console.error('Unable to change reading fullscreen mode:', error);
+    }
+  };
 
   // Calculate word count & reading time
   const { wordCount, readingMinutes } = useMemo(() => {
@@ -76,6 +94,8 @@ export const LessonReader: React.FC<Props> = ({
       })
       .trim();
   }, [lesson.markdown, lesson.title]);
+
+  const headings = useMemo(() => getLessonHeadings(displayMarkdown), [displayMarkdown]);
 
   // Keep track of initialScrollPosition for the current lesson without triggering resets during scrolling
   const initialScrollRef = useRef(initialScrollPosition);
@@ -139,13 +159,86 @@ export const LessonReader: React.FC<Props> = ({
   };
 
   return (
-    <main
-      className={styles.readerContainer}
-      ref={containerRef}
-      onScroll={handleScroll}
-      id="main-reader"
-    >
-      {/* Dynamic Reading Progress Bar */}
+    <main className={styles.readerShell}>
+      <div className={styles.topBar}>
+        <div className={styles.topBarLeft}>
+          {sidebarCollapsed && (
+            <button
+              className={styles.toggleSidebarBtn}
+              onClick={onToggleSidebar}
+              title="Expand Sidebar"
+              aria-label="Expand Sidebar"
+            >
+              <PanelLeftOpen size={15} />
+              <span>Curriculum</span>
+            </button>
+          )}
+
+          {onBackToBookshelf && (
+            <div className={styles.breadcrumbArea}>
+              <button
+                className={styles.breadcrumbLink}
+                onClick={onBackToBookshelf}
+                title="Return to Bookshelf"
+              >
+                <BookOpen size={13} />
+                <span>Library</span>
+              </button>
+              <ChevronRight size={12} className={styles.breadcrumbSep} />
+              <span className={styles.breadcrumbCurrent}>{bookTitle}</span>
+            </div>
+          )}
+        </div>
+
+        <div className={styles.actionButtonGroup}>
+          {document.fullscreenEnabled && (
+            <button
+              type="button"
+              className={styles.actionBtn}
+              onClick={toggleReadingFullscreen}
+              aria-label={isFullscreen ? 'Exit reading fullscreen' : 'Enter reading fullscreen'}
+              aria-pressed={isFullscreen}
+              title={isFullscreen ? 'Exit reading fullscreen (Esc)' : 'Enter reading fullscreen (Esc to exit)'}
+            >
+              {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+              <span>{isFullscreen ? 'Exit full screen' : 'Full screen'}</span>
+            </button>
+          )}
+          <button
+            className={`${styles.actionBtn} ${styles.displayPrefsBtn}`}
+            onClick={() => setIsReadingPrefsOpen(prev => !prev)}
+            title="Reading preferences"
+            aria-label="Typography and display settings"
+            aria-expanded={isReadingPrefsOpen}
+          >
+            <span>Aa</span>
+          </button>
+
+          <ReadingPreferences
+            isOpen={isReadingPrefsOpen}
+            onClose={() => setIsReadingPrefsOpen(false)}
+          />
+
+          <button
+            className={`${styles.actionBtn} ${lesson.bookmarked ? styles.actionBtnActive : ''}`}
+            onClick={() => onToggleBookmark(lesson.id)}
+            title="Bookmark this lesson"
+          >
+            <Bookmark size={13} fill={lesson.bookmarked ? 'currentColor' : 'none'} />
+            <span>{lesson.bookmarked ? 'Bookmarked' : 'Bookmark'}</span>
+          </button>
+
+          <button
+            className={`${styles.actionBtn} ${lesson.completed ? styles.actionBtnActive : ''}`}
+            onClick={() => onToggleComplete(lesson.id)}
+            title={lesson.completed ? 'Mark as incomplete' : 'Mark as completed'}
+          >
+            <CheckCircle2 size={13} />
+            <span>{lesson.completed ? 'Completed' : 'Complete'}</span>
+          </button>
+        </div>
+      </div>
+
       <div className={styles.readingProgressBar} aria-hidden="true">
         <div
           className={styles.readingProgressFill}
@@ -153,126 +246,68 @@ export const LessonReader: React.FC<Props> = ({
         />
       </div>
 
-      <div className={styles.readerLayout}>
-        <div className={styles.readerColumn}>
-          <div className={styles.topBar}>
-            <div className={styles.topBarLeft}>
-              {sidebarCollapsed && (
-                <button
-                  className={styles.toggleSidebarBtn}
-                  onClick={onToggleSidebar}
-                  title="Expand Sidebar"
-                  aria-label="Expand Sidebar"
-                >
-                  <PanelLeftOpen size={15} />
-                  <span>Curriculum</span>
-                </button>
-              )}
-
-              {onBackToBookshelf && (
-                <div className={styles.breadcrumbArea}>
-                  <button
-                    className={styles.breadcrumbLink}
-                    onClick={onBackToBookshelf}
-                    title="Return to Bookshelf"
-                  >
-                    <BookOpen size={13} />
-                    <span>Library</span>
-                  </button>
-                  <ChevronRight size={12} className={styles.breadcrumbSep} />
-                  <span className={styles.breadcrumbCurrent}>{bookTitle}</span>
+      <div
+        className={styles.readerContainer}
+        ref={containerRef}
+        onScroll={handleScroll}
+        id="main-reader"
+        tabIndex={-1}
+      >
+        <div className={styles.readerLayout}>
+          <div className={styles.readerColumn}>
+            <header className={styles.lessonHeader}>
+              <div className={styles.metadataRow}>
+                {lesson.section && <div className={styles.sectionBadge}>{lesson.section}</div>}
+                <div className={styles.readingTimeBadge}>
+                  <Clock size={12} />
+                  <span>{readingMinutes} min read</span>
+                  <span>•</span>
+                  <span>{wordCount.toLocaleString()} words</span>
                 </div>
-              )}
-            </div>
+              </div>
 
-            <div className={styles.actionButtonGroup}>
-              {/* Reading Preferences Popover Toggle */}
-              <button
-                className={`${styles.actionBtn} ${styles.displayPrefsBtn}`}
-                onClick={() => setIsReadingPrefsOpen(prev => !prev)}
-                title="Reading preferences"
-                aria-label="Typography and display settings"
-              >
-                <span>Aa</span>
-              </button>
+              <h1 className={styles.lessonMainTitle}>
+                Lesson {lesson.number} — {lesson.title}
+              </h1>
+            </header>
 
-              <ReadingPreferences
-                isOpen={isReadingPrefsOpen}
-                onClose={() => setIsReadingPrefsOpen(false)}
-              />
+            {lesson.media && lesson.media.length > 0 && (
+              <div style={{ marginBottom: 28 }}>
+                {lesson.media.map(media => {
+                  const mediaKey = `${lesson.id}_${media.id}`;
+                  return (
+                    <MediaPlayer
+                      key={media.id}
+                      type={media.type}
+                      src={media.url}
+                      title={media.title}
+                      initialTime={mediaProgress[mediaKey] || 0}
+                      onTimeUpdate={currentTime => {
+                        if (onSaveMediaTime) {
+                          onSaveMediaTime(mediaKey, currentTime);
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
 
-              <button
-                className={`${styles.actionBtn} ${lesson.bookmarked ? styles.actionBtnActive : ''}`}
-                onClick={() => onToggleBookmark(lesson.id)}
-                title="Bookmark this lesson"
-              >
-                <Bookmark size={13} fill={lesson.bookmarked ? 'currentColor' : 'none'} />
-                <span>{lesson.bookmarked ? 'Bookmarked' : 'Bookmark'}</span>
-              </button>
+            <article className={styles.contentWrapper}>
+              <MarkdownRenderer content={displayMarkdown} headings={headings} />
+            </article>
 
-              <button
-                className={`${styles.actionBtn} ${lesson.completed ? styles.actionBtnActive : ''}`}
-                onClick={() => onToggleComplete(lesson.id)}
-                title={lesson.completed ? 'Mark as incomplete' : 'Mark as completed'}
-              >
-                <CheckCircle2 size={13} />
-                <span>{lesson.completed ? 'Completed' : 'Complete'}</span>
-              </button>
-            </div>
+            <PreviousNextNavigation
+              prevLesson={prevLesson}
+              nextLesson={nextLesson}
+              onSelect={onSelectLesson}
+            />
           </div>
 
-          <header className={styles.lessonHeader}>
-            <div className={styles.metadataRow}>
-              {lesson.section && <div className={styles.sectionBadge}>{lesson.section}</div>}
-              <div className={styles.readingTimeBadge}>
-                <Clock size={12} />
-                <span>{readingMinutes} min read</span>
-                <span>•</span>
-                <span>{wordCount.toLocaleString()} words</span>
-              </div>
-            </div>
-
-            <h1 className={styles.lessonMainTitle}>
-              Lesson {lesson.number} — {lesson.title}
-            </h1>
-          </header>
-
-          {lesson.media && lesson.media.length > 0 && (
-            <div style={{ marginBottom: 28 }}>
-              {lesson.media.map(media => {
-                const mediaKey = `${lesson.id}_${media.id}`;
-                return (
-                  <MediaPlayer
-                    key={media.id}
-                    type={media.type}
-                    src={media.url}
-                    title={media.title}
-                    initialTime={mediaProgress[mediaKey] || 0}
-                    onTimeUpdate={currentTime => {
-                      if (onSaveMediaTime) {
-                        onSaveMediaTime(mediaKey, currentTime);
-                      }
-                    }}
-                  />
-                );
-              })}
-            </div>
-          )}
-
-          <article className={styles.contentWrapper}>
-            <MarkdownRenderer content={displayMarkdown} />
-          </article>
-
-          <PreviousNextNavigation
-            prevLesson={prevLesson}
-            nextLesson={nextLesson}
-            onSelect={onSelectLesson}
-          />
+          <aside className={styles.rightRail}>
+            <LessonTableOfContents key={lesson.id} headings={headings} />
+          </aside>
         </div>
-
-        <aside className={styles.rightRail}>
-          <LessonTableOfContents markdown={displayMarkdown} />
-        </aside>
       </div>
     </main>
   );

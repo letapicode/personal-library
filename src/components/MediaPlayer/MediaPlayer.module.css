@@ -124,3 +124,14 @@
   align-items: center;
   justify-content: space-between;
 }
+
+[data-theme='paper'] .mediaContainer,
+[data-theme='paper'] .speedSelector {
+  background-image: var(--paper-inset-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+  border-color: rgba(80, 70, 54, 0.2);
+}
+
+[data-theme='paper'] .mediaCaption {
+  background-color: transparent;
+}

@@ -13,8 +13,8 @@
 }
 
 .modalBox {
-  background-color: #141314;
-  border: 1px solid #2e2c2e;
+  background-color: var(--modal-bg);
+  border: 1px solid var(--sidebar-border);
   border-radius: 16px;
   width: 90%;
   max-width: 680px;
@@ -30,7 +30,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #242224;
+  border-bottom: 1px solid var(--sidebar-border);
 }
 
 .modalTitle {
@@ -56,7 +56,7 @@
 
 .tabs {
   display: flex;
-  border-bottom: 1px solid #282628;
+  border-bottom: 1px solid var(--sidebar-border);
   gap: 8px;
 }
 
@@ -78,8 +78,8 @@
 
 .inputField {
   width: 100%;
-  background-color: #1b191b;
-  border: 1px solid #2d2b2d;
+  background-color: var(--code-bg);
+  border: 1px solid var(--sidebar-border);
   color: var(--primary-text);
   padding: 10px 14px;
   border-radius: 8px;
@@ -90,8 +90,8 @@
 .textareaField {
   width: 100%;
   height: 200px;
-  background-color: #1b191b;
-  border: 1px solid #2d2b2d;
+  background-color: var(--code-bg);
+  border: 1px solid var(--sidebar-border);
   color: var(--primary-text);
   padding: 12px;
   border-radius: 8px;
@@ -102,8 +102,8 @@
 }
 
 .previewSection {
-  background-color: #1a181a;
-  border: 1px solid #292729;
+  background-color: var(--card-bg);
+  border: 1px solid var(--sidebar-border);
   border-radius: 8px;
   padding: 16px;
 }
@@ -127,12 +127,12 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid #242224;
+  border-top: 1px solid var(--sidebar-border);
 }
 
 .btnSecondary {
   background: transparent;
-  border: 1px solid #333133;
+  border: 1px solid var(--sidebar-border);
   color: var(--primary-text);
   padding: 8px 16px;
   border-radius: 8px;
@@ -150,10 +150,43 @@
 }
 
 .errorBanner {
-  background-color: rgba(224, 75, 75, 0.15);
-  border: 1px solid #e04b4b;
-  color: #ff9999;
+  background-color: color-mix(in srgb, #b33333 14%, var(--modal-bg));
+  border: 1px solid #b33333;
+  color: var(--primary-text);
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 13px;
+}
+
+.inputField::placeholder,
+.textareaField::placeholder {
+  color: var(--muted-text);
+}
+
+.inputField:focus-visible,
+.textareaField:focus-visible,
+.tab:focus-visible,
+.btnPrimary:focus-visible,
+.btnSecondary:focus-visible,
+.closeBtn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+[data-theme='paper'] .modalBox {
+  background-image: var(--paper-grain);
+  background-size: var(--paper-grain-size);
+  border-color: rgba(80, 70, 54, 0.24);
+  box-shadow: 0 18px 42px rgba(65, 56, 44, 0.25);
+}
+
+[data-theme='paper'] .modalOverlay {
+  background-color: rgba(42, 37, 28, 0.52);
+}
+
+[data-theme='paper'] .inputField,
+[data-theme='paper'] .textareaField,
+[data-theme='paper'] .previewSection {
+  background-image: var(--paper-inset-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
 }

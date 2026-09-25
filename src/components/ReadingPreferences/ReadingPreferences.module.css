@@ -9,7 +9,7 @@
   top: 100%;
   right: 0;
   margin-top: 8px;
-  width: 280px;
+  width: min(280px, calc(100vw - 24px));
   background-color: var(--modal-bg);
   border: 1px solid var(--sidebar-border);
   border-radius: var(--radius-md);
@@ -79,4 +79,21 @@
   color: var(--primary-text);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
   font-weight: 650;
+}
+
+[data-theme='paper'] .popoverPanel {
+  background-image: var(--paper-grain);
+  background-size: var(--paper-grain-size);
+  border-color: rgba(80, 70, 54, 0.24);
+  box-shadow: 0 10px 30px rgba(65, 56, 44, 0.17);
+}
+
+[data-theme='paper'] .btnGroup {
+  background-image: var(--paper-inset-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+}
+
+[data-theme='paper'] .optionBtnActive {
+  background-image: var(--paper-grain);
+  background-size: var(--paper-grain-size);
 }

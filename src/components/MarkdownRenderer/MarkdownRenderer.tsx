@@ -3,11 +3,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from '../CodeBlock/CodeBlock';
 import { MediaPlayer } from '../MediaPlayer/MediaPlayer';
-import { generateHeadingId } from '../LessonTableOfContents/LessonTableOfContents';
+import type { LessonHeading } from '../../utils/lessonHeadings';
 import styles from './MarkdownRenderer.module.css';
 
 interface MarkdownRendererProps {
   content: string;
+  headings: readonly LessonHeading[];
 }
 
 function isSafeLinkUrl(url?: string): boolean {
@@ -38,29 +39,11 @@ function isSafeImageUrl(url?: string): boolean {
   return false;
 }
 
-function extractNodeText(node: React.ReactNode): string {
-  if (typeof node === 'string' || typeof node === 'number') {
-    return String(node);
-  }
-  if (!node) return '';
-  if (Array.isArray(node)) {
-    return node.map(extractNodeText).join('');
-  }
-  if (React.isValidElement(node) && node.props && 'children' in (node.props as Record<string, unknown>)) {
-    return extractNodeText((node.props as { children?: React.ReactNode }).children);
-  }
-  return '';
-}
-
-export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
-  const idCounts = new Map<string, number>();
-
-  const getUniqueId = (text: string): string => {
-    const baseId = generateHeadingId(text);
-    const count = idCounts.get(baseId) || 0;
-    idCounts.set(baseId, count + 1);
-    return count === 0 ? baseId : `${baseId}-${count + 1}`;
-  };
+export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, headings }) => {
+  // ReactMarkdown preserves the Markdown source position on each heading node.
+  // Match that immutable position to the outline model; render order is irrelevant.
+  const headingIdsByOffset = new Map(headings.map(heading => [heading.sourceOffset, heading.id]));
+  const headingId = (offset?: number) => offset === undefined ? undefined : headingIdsByOffset.get(offset);
 
   return (
     <div className={styles.markdownContainer}>
@@ -102,29 +85,23 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           td({ children }) {
             return <td className={styles.tableCell}>{children}</td>;
           },
-          h1({ children }) {
-            const text = extractNodeText(children).trim();
-            const id = text ? getUniqueId(text) : undefined;
+          h1({ node, children }) {
             return (
-              <h1 id={id} className={styles.h1}>
+              <h1 id={headingId(node?.position?.start.offset)} tabIndex={-1} className={styles.h1}>
                 {children}
               </h1>
             );
           },
-          h2({ children }) {
-            const text = extractNodeText(children).trim();
-            const id = text ? getUniqueId(text) : undefined;
+          h2({ node, children }) {
             return (
-              <h2 id={id} className={styles.h2}>
+              <h2 id={headingId(node?.position?.start.offset)} tabIndex={-1} className={styles.h2}>
                 {children}
               </h2>
             );
           },
-          h3({ children }) {
-            const text = extractNodeText(children).trim();
-            const id = text ? getUniqueId(text) : undefined;
+          h3({ node, children }) {
             return (
-              <h3 id={id} className={styles.h3}>
+              <h3 id={headingId(node?.position?.start.offset)} tabIndex={-1} className={styles.h3}>
                 {children}
               </h3>
             );

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Book, BookMetadata, Lesson, UserPreferences } from '../types/course';
+import type { Book, BookMetadata, Lesson, ReaderTheme, UserPreferences } from '../types/course';
 import {
   loadLibraryManifest,
   loadBookContent,
@@ -18,7 +18,7 @@ export function useCourseStore() {
   const [scrollPositions, setScrollPositions] = useState<Record<string, number>>({});
   const [mediaProgress, setMediaProgress] = useState<Record<string, number>>({});
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<ReaderTheme>('dark');
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoadingBook, setIsLoadingBook] = useState(false);
 
@@ -34,7 +34,7 @@ export function useCourseStore() {
         setManifest(loadedManifest);
 
         if (savedPrefs) {
-          setTheme(savedPrefs.theme || 'dark');
+          setTheme(['dark', 'light', 'paper'].includes(savedPrefs.theme) ? savedPrefs.theme : 'dark');
           setSidebarCollapsed(savedPrefs.sidebarCollapsed || false);
           if (savedPrefs.mediaProgress) {
             setMediaProgress(savedPrefs.mediaProgress);
@@ -166,8 +166,7 @@ export function useCourseStore() {
     });
   };
 
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
+  const changeTheme = (next: ReaderTheme) => {
     setTheme(next);
     savePreferencesToStorage({
       activeBookId,
@@ -284,7 +283,7 @@ export function useCourseStore() {
     saveScrollPosition,
     saveMediaTime,
     toggleSidebar,
-    toggleTheme,
+    changeTheme,
     toggleBookmark,
     toggleComplete,
     updateActiveBookLessons,

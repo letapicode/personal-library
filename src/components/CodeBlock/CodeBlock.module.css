@@ -7,6 +7,14 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
+[data-theme='paper'] .codeCard {
+  border-radius: 4px;
+  box-shadow: none;
+  border-color: rgba(80, 70, 54, 0.18);
+  background-image: var(--paper-inset-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+}
+
 .codeHeader {
   display: flex;
   justify-content: space-between;
@@ -19,6 +27,11 @@
 
 [data-theme='light'] .codeHeader {
   background-color: rgba(0, 0, 0, 0.025);
+}
+
+[data-theme='paper'] .codeHeader {
+  background-color: rgba(80, 65, 43, 0.065);
+  border-bottom-color: rgba(80, 70, 54, 0.16);
 }
 
 .langLabelGroup {

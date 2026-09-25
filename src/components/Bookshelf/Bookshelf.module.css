@@ -569,6 +569,38 @@
   opacity: 0.7;
 }
 
+[data-theme='paper'] .bookshelfContainer {
+  background-image: var(--paper-canvas-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+}
+
+[data-theme='paper'] .topNavigation {
+  background-image: var(--paper-panel-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+  border-bottom-color: rgba(80, 70, 54, 0.23);
+}
+
+[data-theme='paper'] .bookCard,
+[data-theme='paper'] .spotlightHero,
+[data-theme='paper'] .ghostAddCard {
+  background-image: var(--paper-grain);
+  background-size: var(--paper-grain-size);
+  border-color: rgba(80, 70, 54, 0.2);
+}
+
+[data-theme='paper'] .bookFooter {
+  background-color: transparent;
+}
+
+[data-theme='paper'] .searchBox,
+[data-theme='paper'] .cmdKBadge,
+[data-theme='paper'] .tagChip,
+[data-theme='paper'] .shelfMeta,
+[data-theme='paper'] .spotlightChapters {
+  background-image: var(--paper-inset-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+}
+
 /* ─── Responsive: Spotlight stacks on small screens ─── */
 @media (max-width: 720px) {
   .spotlightHero {

@@ -16,7 +16,6 @@
   color: var(--primary-text);
   margin-top: 44px;
   margin-bottom: 20px;
-  scroll-margin-top: 84px;
 }
 
 .h2 {
@@ -28,7 +27,6 @@
   color: var(--primary-text);
   margin-top: 40px;
   margin-bottom: 16px;
-  scroll-margin-top: 84px;
 }
 
 .h3 {
@@ -40,7 +38,14 @@
   color: var(--primary-text);
   margin-top: 30px;
   margin-bottom: 12px;
-  scroll-margin-top: 84px;
+}
+
+.h1:focus,
+.h2:focus,
+.h3:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 5px;
+  border-radius: 2px;
 }
 
 .paragraph {
@@ -89,6 +94,10 @@
   background: rgba(158, 42, 97, 0.04);
 }
 
+[data-theme='paper'] .blockquote {
+  background: rgba(91, 73, 47, 0.07);
+}
+
 .blockquote p:last-child {
   margin-bottom: 0;
 }
@@ -119,6 +128,33 @@
 
 [data-theme='light'] .tableHeaderCell {
   background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='paper'] .tableHeaderCell {
+  background-color: rgba(90, 70, 44, 0.08);
+}
+
+[data-theme='paper'] .h1,
+[data-theme='paper'] .h2,
+[data-theme='paper'] .h3 {
+  font-family: var(--reading-font);
+  font-weight: 680;
+}
+
+[data-theme='paper'] .paragraph {
+  letter-spacing: 0.004em;
+}
+
+[data-theme='paper'] .tableWrapper {
+  border-radius: 3px;
+  box-shadow: none;
+  background-image: var(--paper-inset-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+}
+
+[data-theme='paper'] .inlineCode {
+  background-image: var(--paper-inset-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
 }
 
 .tableCell {

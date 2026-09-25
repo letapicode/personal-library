@@ -94,8 +94,10 @@ export interface UserPreferences {
   scrollPositions: Record<string, number>;
   mediaProgress?: Record<string, number>;
   sidebarCollapsed: boolean;
-  theme: 'dark' | 'light';
+  theme: ReaderTheme;
 }
+
+export type ReaderTheme = 'dark' | 'light' | 'paper';
 
 export interface SharedConversationImportResult {
   title?: string;

@@ -5,7 +5,7 @@ setlocal enabledelayedexpansion
 cd /d "%~dp0"
 
 echo ============================================================
-echo   ChatGPT Course Reader - Engineering Library Launcher
+echo   Personal Library Launcher
 echo ============================================================
 echo.
 
@@ -13,7 +13,7 @@ echo.
 where node >nul 2>nul
 if %ERRORLEVEL% neq 0 (
     echo [ERROR] Node.js is not found on your system!
-    echo Please install Node.js v18 or newer from https://nodejs.org/
+    echo Please install Node.js v20.19+ or v22.12+ from https://nodejs.org/
     echo Once installed, rerun this command.
     pause
     exit /b 1
@@ -42,15 +42,14 @@ if not exist "node_modules\" (
     echo [OK] Dependencies verified.
 )
 
-:: 4. Start the application and open browser automatically
-echo [2/2] Starting Engineering Library server...
+:: 4. Let the launcher verify port ownership and wait for Vite readiness.
+echo [2/2] Checking port 3000 and starting Engineering Library if needed...
 echo.
-echo Opening your library at http://localhost:3000 ...
-start http://localhost:3000
-
-call npm run dev
-if %ERRORLEVEL% neq 0 (
+node "%~dp0scripts\launch-library.mjs"
+set "launchExit=%ERRORLEVEL%"
+if not "%launchExit%"=="0" (
     echo.
-    echo [Server Stopped with Error code %ERRORLEVEL%]
+    echo [Library launch stopped with error code %launchExit%]
     pause
 )
+exit /b %launchExit%

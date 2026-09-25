@@ -53,3 +53,10 @@
   font-weight: 600;
   color: var(--primary-text);
 }
+
+[data-theme='paper'] .navBtn {
+  background-image: var(--paper-panel-wash), var(--paper-grain);
+  background-size: auto, var(--paper-grain-size);
+  border-color: rgba(80, 70, 54, 0.22);
+  border-radius: 3px;
+}

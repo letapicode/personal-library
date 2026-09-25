@@ -4,14 +4,13 @@ import {
   Settings,
   Bookmark,
   CheckCircle2,
-  Moon,
-  Sun,
   PanelLeftClose,
   ChevronLeft,
   Download,
   X
 } from 'lucide-react';
-import type { Lesson } from '../../types/course';
+import type { Lesson, ReaderTheme } from '../../types/course';
+import { ThemePicker } from '../ThemePicker/ThemePicker';
 import { CANONICAL_SECTION_ORDER } from '../../parser/sectionClassifier';
 import styles from './Sidebar.module.css';
 
@@ -20,11 +19,11 @@ interface SidebarProps {
   lessons: Lesson[];
   activeLessonId: string | null;
   collapsed: boolean;
-  theme: 'dark' | 'light';
+  theme: ReaderTheme;
   onSelectLesson: (id: string) => void;
   onOpenManager: () => void;
   onExportBook?: () => void;
-  onToggleTheme: () => void;
+  onChangeTheme: (theme: ReaderTheme) => void;
   onToggleSidebar: () => void;
   onBackToBookshelf: () => void;
   onOpenCommandPalette?: () => void;
@@ -39,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectLesson,
   onOpenManager,
   onExportBook,
-  onToggleTheme,
+  onChangeTheme,
   onToggleSidebar,
   onBackToBookshelf,
   onOpenCommandPalette
@@ -139,9 +138,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Merged header actions: Theme, Export, Settings, and Hide Sidebar button */}
         <div className={styles.headerActions}>
-          <button className={styles.iconBtn} onClick={onToggleTheme} title="Toggle Theme" aria-label="Toggle Theme">
-            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-          </button>
+          <ThemePicker theme={theme} onChange={onChangeTheme} buttonClassName={styles.iconBtn} />
           {onExportBook && (
             <button className={styles.iconBtn} onClick={onExportBook} title="Export Book (.md / .json)" aria-label="Export Book">
               <Download size={15} />

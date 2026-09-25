@@ -5,8 +5,10 @@ import fs from 'fs';
 import {defineConfig, Plugin} from 'vite';
 
 import { importUniversalUrl } from './server/urlImporter.ts';
+import { createInstanceId } from './scripts/library-port.mjs';
 
 const projectRoot = import.meta.dirname || path.resolve('.');
+const instanceId = createInstanceId(projectRoot);
 
 function courseDataPlugin(): Plugin {
   return {
@@ -14,6 +16,14 @@ function courseDataPlugin(): Plugin {
     configureServer(server) {
       // 1. API endpoint for server-side URL imports (ChatGPT, Claude, raw markdown)
       server.middlewares.use((req, res, next) => {
+        if (req.url === '/__library-health' && req.method === 'GET') {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.setHeader('Cache-Control', 'no-store');
+          res.end(JSON.stringify({ app: 'personal-library', instanceId }));
+          return;
+        }
+
         if (req.url === '/api/import-url' && req.method === 'POST') {
           // Modern CSRF defense: block cross-site requests via Sec-Fetch-Site
           const secFetchSite = req.headers['sec-fetch-site'];
@@ -165,6 +175,9 @@ export default defineConfig(() => {
       },
     },
     server: {
+      host: '127.0.0.1',
+      port: 3000,
+      strictPort: true,
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },

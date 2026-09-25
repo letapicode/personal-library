@@ -1,0 +1,70 @@
+.picker {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.menu {
+  position: absolute;
+  z-index: 200;
+  top: calc(100% + 9px);
+  right: 0;
+  width: 172px;
+  padding: 7px;
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius-md);
+  background: var(--modal-bg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.menuTitle {
+  padding: 6px 9px 8px;
+  color: var(--muted-text);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.choice {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--primary-text);
+  font: 600 13px var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice:hover,
+.choice:focus-visible {
+  background: var(--sidebar-hover);
+}
+
+.selected {
+  color: var(--accent-primary);
+  background: var(--sidebar-active);
+}
+
+.trigger:focus-visible,
+.choice:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+[data-theme='paper'] .menu {
+  background-image: var(--paper-grain);
+  background-size: var(--paper-grain-size);
+  border-color: rgba(80, 70, 54, 0.24);
+}

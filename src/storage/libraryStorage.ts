@@ -365,7 +365,12 @@ export async function savePreferencesToStorage(prefs: UserPreferences): Promise<
   try {
     const db = await openDatabase();
     const tx = db.transaction(STORE_PREFERENCES, 'readwrite');
-    tx.objectStore(STORE_PREFERENCES).put({ key: 'user_prefs', ...prefs });
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve();
+      tx.onabort = () => reject(tx.error || new Error('Preference write aborted'));
+      tx.onerror = () => reject(tx.error || new Error('Preference write failed'));
+      tx.objectStore(STORE_PREFERENCES).put({ key: 'user_prefs', ...prefs });
+    });
   } catch {
     try {
       localStorage.setItem(LEGACY_PREFS_KEY, JSON.stringify(prefs));

@@ -5,13 +5,14 @@ import {
   FileText,
   Sun,
   Moon,
+  BookOpenText,
   Library,
   Settings,
   Plus,
   ArrowRight,
   Download
 } from 'lucide-react';
-import type { Book, BookMetadata, Lesson } from '../../types/course';
+import type { Book, BookMetadata, Lesson, ReaderTheme } from '../../types/course';
 import styles from './CommandPalette.module.css';
 
 interface CommandItem {
@@ -29,10 +30,10 @@ interface Props {
   books: (Book | BookMetadata)[];
   activeBookId: string | null;
   lessons: Lesson[];
-  theme: 'dark' | 'light';
+  theme: ReaderTheme;
   onSelectBook: (bookId: string | null) => void;
   onSelectLesson: (lessonId: string) => void;
-  onToggleTheme: () => void;
+  onChangeTheme: (theme: ReaderTheme) => void;
   onOpenManager: () => void;
   onOpenAddBook: () => void;
   onExportBook?: () => void;
@@ -47,7 +48,7 @@ export const CommandPalette: React.FC<Props> = ({
   theme,
   onSelectBook,
   onSelectLesson,
-  onToggleTheme,
+  onChangeTheme,
   onOpenManager,
   onOpenAddBook,
   onExportBook
@@ -118,17 +119,21 @@ export const CommandPalette: React.FC<Props> = ({
 
     // 3. Quick Actions
     const actions: CommandItem[] = [
-      {
-        id: 'action-theme',
-        category: 'Actions',
-        title: theme === 'dark' ? 'Switch to Light Paper Theme' : 'Switch to Dark Obsidian Theme',
-        subtitle: 'Toggle reader appearance',
-        icon: theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />,
+      ...([
+        { value: 'dark' as const, label: 'Dark', icon: <Moon size={15} /> },
+        { value: 'light' as const, label: 'Light', icon: <Sun size={15} /> },
+        { value: 'paper' as const, label: 'Paper', icon: <BookOpenText size={15} /> }
+      ].map(option => ({
+        id: `action-theme-${option.value}`,
+        category: 'Actions' as const,
+        title: `Switch to ${option.label} Theme`,
+        subtitle: theme === option.value ? 'Current appearance' : 'Change reader appearance',
+        icon: option.icon,
         onSelect: () => {
-          onToggleTheme();
+          onChangeTheme(option.value);
           onClose();
         }
-      },
+      }))),
       {
         id: 'action-library',
         category: 'Actions',
@@ -182,7 +187,7 @@ export const CommandPalette: React.FC<Props> = ({
     }
 
     return list;
-  }, [query, activeBookId, lessons, books, theme, onSelectBook, onSelectLesson, onToggleTheme, onOpenManager, onOpenAddBook, onExportBook, onClose]);
+  }, [query, activeBookId, lessons, books, theme, onSelectBook, onSelectLesson, onChangeTheme, onOpenManager, onOpenAddBook, onExportBook, onClose]);
 
   // Adjust selection bounds if query shrinks list
   useEffect(() => {
